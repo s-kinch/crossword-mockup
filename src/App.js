@@ -1,20 +1,34 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import SignIn from './components/SignIn'
+import { BrowserRouter as Router, Route, NavLink} from 'react-router-dom';
+const URL = 'https://localhost:3000/api/v1/'
 
 class App extends Component {
+
+  signIn = (username) => {
+    fetch(URL + 'users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({username: username})
+    })
+  }
+
+  MySignIn = (props) => {
+    return (<SignIn signIn={this.signIn} />)
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+      <Router>
+        <div>
+          <Route exact path='/signin' render={this.MySignIn} />
+        </div>
+      </Router>
+    )
   }
 }
 
