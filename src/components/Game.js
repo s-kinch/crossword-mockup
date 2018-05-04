@@ -34,7 +34,7 @@ for (var key in available_letters) {
   letter_array = letter_array.concat(Array(available_letters[key]).fill(key))
 }
 
-class Home extends React.Component {
+class Game extends React.Component {
 
   state = {
     available_letters : letter_array
@@ -43,19 +43,22 @@ class Home extends React.Component {
   getRandomLetter = () => {
     var randomIndex = Math.floor(Math.random()*letter_array.length);
     return letter_array.splice(randomIndex, 1)[0];
+
+    this.setState({
+      available_letters: letter_array
+    })
   }
 
   render(){
     return(
       <div>
-        <ActionCable channel={{ channel: 'GameroomChannel', gameroom_id: this.props.}}     />
-        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
-        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
-        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
-        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
+        <h1> {this.props.openGameroom.id} </h1>
+        <ActionCable channel={{ channel: 'GameroomChannel', gameroom_id: this.props.openGameroom.id}}     />
+        <button onClick={this.props.leaveGame}>Leave Game</button>
+        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} />
       </div>
     )
   }
 }
 
-export default Home
+export default Game

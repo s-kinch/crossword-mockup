@@ -2,11 +2,15 @@ import React from 'react'
 
 class TileContainer extends React.Component {
 
+  state = {
+
+  }
+
   render(){
-    console.log(this.props.getRandomLetter());
-    console.log(this.props.available_letters);
     return(
-      <div></div>
+      <div>
+      <button onClick={this.props.getRandomLetter}>Take Tile</button>
+      </div>
     )
   }
 }

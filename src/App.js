@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, NavLink} from 'react-router-dom';
 import { Redirect } from 'react-router'
 import SignIn from './components/SignIn'
 import Lobby from './components/Lobby'
+import Game from './components/Game'
 
 const URL = 'http://localhost:3000/api/v1/'
 
@@ -48,6 +49,25 @@ class App extends Component {
     }))
   }
 
+  leaveGame = () => {
+    this.setState({
+      openGameroom: null
+    })
+  }
+
+  createGame = () => {
+    fetch(URL + 'games', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }).then(res => res.json()).then(game =>
+      this.setState({
+        games: [...this.state.games, game]
+      }))
+  }
+
   // MySignIn = () => {
   //   return (<SignIn signIn={this.signIn} />)
   // }
@@ -57,7 +77,7 @@ class App extends Component {
   // }
 
   render() {
-    console.log(this.state.games);
+    console.log(this.state.openGameroom);
     return (
       <Router>
         <div>
@@ -67,9 +87,12 @@ class App extends Component {
           <Route exact path='/signin' render={this.MySignIn} />
           */}
 
-          <SignIn signIn={this.signIn} />
-          <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick}/>
-
+          {this.state.openGameroom ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser}/> :
+          <div>
+            <SignIn signIn={this.signIn} />
+            <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick} createGame={this.createGame}/>
+          </div>
+           }
         </div>
       </Router>
     )
