@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import SignIn from './components/SignIn'
 import { BrowserRouter as Router, Route, NavLink} from 'react-router-dom';
+import { Redirect } from 'react-router'
+import SignIn from './components/SignIn'
+import Game from './components/Game'
+
 const URL = 'http://localhost:3000/api/v1/'
 
 class App extends Component {
@@ -22,20 +25,24 @@ class App extends Component {
       body: JSON.stringify({
         name: username
       })
-    })
-
-    // this.setState({currentUser: username})
+    }).then(this.setState({currentUser: username}))
   }
 
-  MySignIn = (props) => {
+  MySignIn = () => {
     return (<SignIn signIn={this.signIn} />)
   }
 
+  MyGame = () => {
+    return (<Game currentUser={this.state.currentUser}/>)
+  }
+
   render() {
+    console.log("rendering");
     return (
       <Router>
         <div>
-          // this.state.currentUser ? something : signin route
+          {this.state.currentUser ? <Redirect to='/game'/> : <Redirect to='/signin'/>}
+          <Route exact path='/game' render={this.MyGame} />
           <Route exact path='/signin' render={this.MySignIn} />
         </div>
       </Router>
