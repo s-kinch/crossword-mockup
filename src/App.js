@@ -39,6 +39,15 @@ class App extends Component {
     }).then(this.setState({currentUser: username}))
   }
 
+  handleClick = (gameId) => {
+    fetch(URL + `games/${gameId}/join`)
+    .then(resp => resp.json())
+    .then(game =>
+      this.setState({
+      openGameroom: game
+    }))
+  }
+
   // MySignIn = () => {
   //   return (<SignIn signIn={this.signIn} />)
   // }
@@ -59,7 +68,7 @@ class App extends Component {
           */}
 
           <SignIn signIn={this.signIn} />
-          <Lobby currentUser={this.state.currentUser} games={this.state.games}/>
+          <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick}/>
 
         </div>
       </Router>
