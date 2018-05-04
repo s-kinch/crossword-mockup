@@ -1,61 +1,67 @@
 import React from 'react'
 import TileContainer from './TileContainer'
+import Pile from './Pile'
 import { ActionCable } from 'react-actioncable-provider'
 
-const available_letters = {"A": 13,
-                           "B": 3,
-                           "C": 3,
-                           "D": 6,
-                           "E": 18,
-                           "F": 3,
-                           "G": 4,
-                           "H": 3,
-                           "I": 12,
-                           "J": 2,
-                           "K": 2,
-                           "L": 5,
-                           "M": 3,
-                           "N": 8,
-                           "O": 11,
-                           "P": 3,
-                           "Q": 2,
-                           "R": 9,
-                           "S": 6,
-                           "T": 9,
-                           "U": 6,
-                           "V": 3,
-                           "W": 3,
-                           "X": 2,
-                           "Y": 3,
-                           "Z": 2}
+const URL = 'http://localhost:3000/api/v1/'
 
-let letter_array = []
-for (var key in available_letters) {
-  letter_array = letter_array.concat(Array(available_letters[key]).fill(key))
-}
 
 class Game extends React.Component {
 
   state = {
-    available_letters : letter_array
+    available_letters : []
+  }
+
+  componentDidMount = () => {
+    fetch(URL + `games/${this.props.openGameroom.id}/letters`)
+    .then(res => res.json())
+    .then(letters => this.setState({
+      available_letters: letters
+    }))
   }
 
   getRandomLetter = () => {
-    var randomIndex = Math.floor(Math.random()*letter_array.length);
-    return letter_array.splice(randomIndex, 1)[0];
+    const randomIndex = Math.floor(Math.random()*this.state.available_letters.length);
+    const letter = this.state.available_letters[randomIndex]
 
-    this.setState({
-      available_letters: letter_array
+    fetch(URL + `letters/${letter.id}`, {
+      method: 'DELETE',
     })
+
+    console.log(letter)
+    return letter
+  }
+
+  shuffle = (letters) => {
+    let shuffled_letters = letters
+    let currentIndex = shuffled_letters.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = shuffled_letters[currentIndex];
+      shuffled_letters[currentIndex] = shuffled_letters[randomIndex];
+      shuffled_letters[randomIndex] = temporaryValue;
+    }
+
+    return shuffled_letters;
   }
 
   render(){
+    console.log(this.state.available_letters)
     return(
       <div>
         <h1> {this.props.openGameroom.id} </h1>
         <ActionCable channel={{ channel: 'GameroomChannel', gameroom_id: this.props.openGameroom.id}}     />
         <button onClick={this.props.leaveGame}>Leave Game</button>
+        <Pile shuffled_letters={this.shuffle(this.state.available_letters)} />
         <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} />
+
       </div>
     )
   }
