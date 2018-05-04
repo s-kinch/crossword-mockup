@@ -1,5 +1,6 @@
 import React from 'react'
 import TileContainer from './TileContainer'
+import { ActionCable } from 'react-actioncable-provider'
 
 const available_letters = {"A": 13,
                            "B": 3,
@@ -47,6 +48,7 @@ class Home extends React.Component {
   render(){
     return(
       <div>
+        <ActionCable channel={{ channel: 'GameroomChannel', gameroom_id: this.props.}}     />
         <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
         <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
         <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter}/>
