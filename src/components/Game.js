@@ -66,6 +66,7 @@ class Game extends React.Component {
   }
 
   onDrop = (event) => {
+    event.preventDefault()
     // const {letter, game} = event.dataTransfer.getData('object')
     // console.log(event.dataTransfer)
     // this.pickTile(letter, game)
@@ -80,11 +81,9 @@ class Game extends React.Component {
     const data = `${letter.id},${game.id}`
     // console.log(data)
     event.dataTransfer.setData('text', data)
-
   }
 
   pickTile = (letterId, gameId) => {
-    
     this.setState({
       player_letters: [...this.state.player_letters, this.props.openGameroom.letters.find(x => x.id === parseInt(letterId))]
     })
@@ -110,11 +109,11 @@ class Game extends React.Component {
         <button onClick={this.props.leaveGame}>Leave Game</button>
 
         {
-          this.state.player_letters.length === 21 ?
+          this.state.player_letters.length === 1 ?
           <Gameboard /> :
           <Pile onDrop={this.onDrop} onDragStart={this.onDragStart} shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
         }
-        <TileContainer onDrop={this.onDrop} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
+        <TileContainer onDrop={this.onDrop} onDragStart={() => alert('jdskl')} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
       </div>
     )
   }

@@ -45,3 +45,25 @@
 .tile.container.header {
   text-align: center;
 }
+
+.board {
+  width: 850px;
+  height: 850px;
+  margin: auto;
+  display: block;
+}
+
+
+.ui.grid>.row>.column.square  {
+  z-index: 2;
+  margin: 0 0 0 0;
+  padding-left: 0;
+  padding-right: 0;
+  width: 50px !important;
+
+}
+
+img {
+  position: absolute;
+  z-index: 1;
+}

@@ -18,10 +18,10 @@ class TileContainer extends React.Component {
     let first_column
     let second_column
     if (this.props.player_letters.length <= 11){
-      first_column = this.props.player_letters.map(letter => <Tile key={letter.id} letter={letter}/>)
+      first_column = this.props.player_letters.map(letter => <Tile onDragStart={this.props.onDragStart} key={letter.id} letter={letter}/>)
     } else {
-      first_column = this.props.player_letters.slice(0,10).map(letter => <Tile key={letter.id} letter={letter}/>)
-      second_column = this.props.player_letters.slice(11).map(letter => <Tile key={letter.id} letter={letter}/>)
+      first_column = this.props.player_letters.slice(0,11).map(letter => <Tile onDragStart={this.props.onDragStart} key={letter.id} letter={letter}/>)
+      second_column = this.props.player_letters.slice(11).map(letter => <Tile onDragStart={this.props.onDragStart} key={letter.id} letter={letter}/>)
     }
     return(
       <div onDragOver={(e) => e.preventDefault()} onDrop={this.props.onDrop}>
