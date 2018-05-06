@@ -1,6 +1,7 @@
 import React from 'react'
 import TileContainer from './TileContainer'
 import Pile from './Pile'
+import Gameboard from './Gameboard'
 import { ActionCable } from 'react-actioncable-provider'
 
 const URL = 'http://localhost:3000/api/v1/'
@@ -64,32 +65,56 @@ class Game extends React.Component {
     return shuffled_letters;
   }
 
-  pickTile = (letter, game) => {
+  onDrop = (event) => {
+    // const {letter, game} = event.dataTransfer.getData('object')
+    // console.log(event.dataTransfer)
+    // this.pickTile(letter, game)
+    let data = event.dataTransfer.getData('text')
+    data = data.split(',')
+    const letter = data[0]
+    const game = data[1]
+    this.pickTile(letter, game)
+  }
+
+  onDragStart = (event, letter, game) => {
+    const data = `${letter.id},${game.id}`
+    // console.log(data)
+    event.dataTransfer.setData('text', data)
+
+  }
+
+  pickTile = (letterId, gameId) => {
+    
     this.setState({
-      player_letters: [...this.state.player_letters, letter]
+      player_letters: [...this.state.player_letters, this.props.openGameroom.letters.find(x => x.id === parseInt(letterId))]
     })
-    fetch(URL + `letters/${letter.id}`, {
+    fetch(URL + `letters/${letterId}`, {
       method: 'DELETE',
       headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
 			},
 			body: JSON.stringify({
-				letter_id: letter.id,
-				game_id: game.id
+				letter_id: parseInt(letterId),
+				game_id: parseInt(gameId)
 			})
     })
   }
 
   render(){
-    // console.log(this.state.available_letters.length)
+    console.log(this.props.openGameroom)
     return(
       <div>
         <h1> {this.props.openGameroom.id} </h1>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
         <button onClick={this.props.leaveGame}>Leave Game</button>
-        <Pile shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
-        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
+
+        {
+          this.state.player_letters.length === 21 ?
+          <Gameboard /> :
+          <Pile onDrop={this.onDrop} onDragStart={this.onDragStart} shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
+        }
+        <TileContainer onDrop={this.onDrop} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
       </div>
     )
   }

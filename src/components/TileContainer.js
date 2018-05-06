@@ -24,10 +24,10 @@ class TileContainer extends React.Component {
       second_column = this.props.player_letters.slice(11).map(letter => <Tile key={letter.id} letter={letter}/>)
     }
     return(
-      <div>
+      <div onDragOver={(e) => e.preventDefault()} onDrop={this.props.onDrop}>
         {/*<button onClick={this.takeLetter}>Take Tile</button>*/}
         <h1 className="tile container header"> Your Tiles </h1>
-        <div className="ui page grid">
+        <div className="ui page grid" >
           <div className="eleven column row">
             {first_column}
           </div>
