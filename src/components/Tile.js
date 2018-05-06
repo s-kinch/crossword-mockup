@@ -4,7 +4,13 @@ class Tile extends React.Component {
 
   render(){
     return(
-      <div></div>
+      <div className="column">
+        <div className="ui card">
+          <div className="content">
+            {this.props.value}
+          </div>
+        </div>
+      </div>
     )
   }
 }

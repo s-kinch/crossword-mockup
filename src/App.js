@@ -77,7 +77,7 @@ class App extends Component {
   // }
 
   render() {
-    console.log(this.state.openGameroom);
+    // console.log(this.state.openGameroom);
     return (
       <Router>
         <div>

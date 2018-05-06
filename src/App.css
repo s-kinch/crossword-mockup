@@ -26,3 +26,17 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.ui.card {
+  width: 50px;
+  text-align: center;
+}
+
+.content {
+  width: 50px;
+  text-align: center;
+}
+
+.ui.grid>.row>.column {
+  padding-top: 1rem;
+}

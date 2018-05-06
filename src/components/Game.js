@@ -28,7 +28,7 @@ class Game extends React.Component {
       method: 'DELETE',
     })
 
-    console.log(letter)
+    // console.log(letter)
     return letter
   }
 
@@ -53,7 +53,7 @@ class Game extends React.Component {
   }
 
   render(){
-    console.log(this.state.available_letters)
+    // console.log(this.state.available_letters)
     return(
       <div>
         <h1> {this.props.openGameroom.id} </h1>
