@@ -40,3 +40,7 @@
 .ui.grid>.row>.column {
   padding-top: 1rem;
 }
+
+.tile.container.header {
+  text-align: center;
+}

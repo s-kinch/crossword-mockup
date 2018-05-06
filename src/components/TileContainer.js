@@ -1,4 +1,5 @@
 import React from 'react'
+import Tile from './Tile'
 
 class TileContainer extends React.Component {
 
@@ -13,11 +14,27 @@ class TileContainer extends React.Component {
   }
 
   render(){
-    const letters = this.state.yourLetters.map(letter => <li>{letter.value}</li>)
+    // const letters = this.state.yourLetters.map(letter => <Tile {...letter}/>)
+    let first_column
+    let second_column
+    if (this.props.player_letters.length <= 11){
+      first_column = this.props.player_letters.map(letter => <Tile key={letter.id} letter={letter}/>)
+    } else {
+      first_column = this.props.player_letters.slice(0,10).map(letter => <Tile key={letter.id} letter={letter}/>)
+      second_column = this.props.player_letters.slice(11).map(letter => <Tile key={letter.id} letter={letter}/>)
+    }
     return(
       <div>
-      <button onClick={this.takeLetter}>Take Tile</button>
-      <ul>{letters}</ul>
+        {/*<button onClick={this.takeLetter}>Take Tile</button>*/}
+        <h1 className="tile container header"> Your Tiles </h1>
+        <div className="ui page grid">
+          <div className="eleven column row">
+            {first_column}
+          </div>
+          <div className="eleven column row">
+            {second_column}
+          </div>
+        </div>
       </div>
     )
   }

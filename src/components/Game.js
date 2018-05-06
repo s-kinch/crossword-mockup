@@ -9,7 +9,8 @@ const URL = 'http://localhost:3000/api/v1/'
 class Game extends React.Component {
 
   state = {
-    available_letters : []
+    available_letters : [],
+    player_letters: []
   }
 
   componentDidMount = () => {
@@ -52,15 +53,26 @@ class Game extends React.Component {
     return shuffled_letters;
   }
 
+  pickTile = (letter) => {
+    let index = this.state.available_letters.indexOf(letter)
+    this.setState({
+      available_letters: [...this.state.available_letters.slice(0,index), ...this.state.available_letters.slice(index+1)], 
+      player_letters: [...this.state.player_letters, letter]
+    })
+    fetch(URL + `letters/${letter.id}`, {
+      method: 'DELETE',
+    })
+  }
+
   render(){
-    // console.log(this.state.available_letters)
+    console.log(this.state.available_letters.length)
     return(
       <div>
         <h1> {this.props.openGameroom.id} </h1>
         <ActionCable channel={{ channel: 'GameroomChannel', gameroom_id: this.props.openGameroom.id}}     />
         <button onClick={this.props.leaveGame}>Leave Game</button>
-        <Pile shuffled_letters={this.shuffle(this.state.available_letters)} />
-        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} />
+        <Pile shuffled_letters={this.shuffle(this.state.available_letters)} pickTile={this.pickTile}/>
+        <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
 
       </div>
     )

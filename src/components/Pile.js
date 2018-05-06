@@ -4,7 +4,7 @@ import Tile from './Tile'
 class Pile extends React.Component {
 
   render(){
-    let pile = this.props.shuffled_letters.map(letter => <Tile key={letter.id} {...letter}/>)
+    let pile = this.props.shuffled_letters.map(letter => <Tile key={letter.id} letter={letter} pickTile={this.props.pickTile}/>)
     return(
       <div className="ui page grid">
         <div className="twelve column row">

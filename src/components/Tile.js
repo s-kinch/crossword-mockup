@@ -5,12 +5,13 @@ class Tile extends React.Component {
   render(){
     return(
       <div className="column">
-        <div className="ui card">
+        <div className="ui card" onClick={() => { if (this.props.pickTile){this.props.pickTile(this.props.letter)}}}>
           <div className="content">
-            {this.props.value}
+            {this.props.letter.value}
           </div>
         </div>
       </div>
+
     )
   }
 }
