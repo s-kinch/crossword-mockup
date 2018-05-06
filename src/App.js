@@ -10,6 +10,7 @@ import Game from './components/Game'
 const URL = 'http://localhost:3000/api/v1/'
 
 class App extends Component {
+
   constructor(){
     super()
     this.state = {
@@ -68,6 +69,19 @@ class App extends Component {
       }))
   }
 
+  removeLetter = (letter_id) => {
+		let newLetters = this.state.openGameroom.letters.filter(letter => letter.id !== letter_id)
+
+		let newGameroom = {...this.state.openGameroom}
+
+		newGameroom.letters = newLetters
+
+		this.setState({
+			openGameroom: newGameroom
+		})
+
+	}
+
   // MySignIn = () => {
   //   return (<SignIn signIn={this.signIn} />)
   // }
@@ -77,7 +91,7 @@ class App extends Component {
   // }
 
   render() {
-    // console.log(this.state.openGameroom);
+    console.log(this.state.openGameroom);
     return (
       <Router>
         <div>
@@ -87,7 +101,7 @@ class App extends Component {
           <Route exact path='/signin' render={this.MySignIn} />
           */}
 
-          {this.state.openGameroom ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser}/> :
+          {this.state.openGameroom ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser} removeLetter = {this.removeLetter}/> :
           <div>
             <SignIn signIn={this.signIn} />
             <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick} createGame={this.createGame}/>

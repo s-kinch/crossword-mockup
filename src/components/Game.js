@@ -9,29 +9,40 @@ const URL = 'http://localhost:3000/api/v1/'
 class Game extends React.Component {
 
   state = {
-    available_letters : [],
     player_letters: []
   }
 
-  componentDidMount = () => {
-    fetch(URL + `games/${this.props.openGameroom.id}/letters`)
-    .then(res => res.json())
-    .then(letters => this.setState({
-      available_letters: letters
-    }))
+  handleSocketResponse = data => {
+    switch (data.type) {
+      case "DELETE_LETTER":
+      		this.props.removeLetter(data.payload.letter_id)
+       		break;
+      default:
+        console.log(data);
+    }
+
   }
 
-  getRandomLetter = () => {
-    const randomIndex = Math.floor(Math.random()*this.state.available_letters.length);
-    const letter = this.state.available_letters[randomIndex]
+  // componentDidMount = () => {
+  //   fetch(URL + `games/${this.props.openGameroom.id}/letters`)
+  //   .then(res => res.json())
+  //   .then(letters => this.setState({
+  //     available_letters: letters
+  //   }))
+  // }
 
-    fetch(URL + `letters/${letter.id}`, {
-      method: 'DELETE',
-    })
-
-    // console.log(letter)
-    return letter
-  }
+  // getRandomLetter = () => {
+  //   const randomIndex = Math.floor(Math.random()*this.state.available_letters.length);
+  //   const letter = this.state.available_letters[randomIndex]
+  //
+  //   fetch(URL + `letters/${letter.id}`, {
+  //     method: 'DELETE',
+  //
+  //   })
+  //
+  //   // console.log(letter)
+  //   return letter
+  // }
 
   shuffle = (letters) => {
     let shuffled_letters = letters
@@ -53,27 +64,32 @@ class Game extends React.Component {
     return shuffled_letters;
   }
 
-  pickTile = (letter) => {
-    let index = this.state.available_letters.indexOf(letter)
+  pickTile = (letter, game) => {
     this.setState({
-      available_letters: [...this.state.available_letters.slice(0,index), ...this.state.available_letters.slice(index+1)], 
       player_letters: [...this.state.player_letters, letter]
     })
     fetch(URL + `letters/${letter.id}`, {
       method: 'DELETE',
+      headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			body: JSON.stringify({
+				letter_id: letter.id,
+				game_id: game.id
+			})
     })
   }
 
   render(){
-    console.log(this.state.available_letters.length)
+    // console.log(this.state.available_letters.length)
     return(
       <div>
         <h1> {this.props.openGameroom.id} </h1>
-        <ActionCable channel={{ channel: 'GameroomChannel', gameroom_id: this.props.openGameroom.id}}     />
+        <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
         <button onClick={this.props.leaveGame}>Leave Game</button>
-        <Pile shuffled_letters={this.shuffle(this.state.available_letters)} pickTile={this.pickTile}/>
+        <Pile shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
         <TileContainer available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
-
       </div>
     )
   }
