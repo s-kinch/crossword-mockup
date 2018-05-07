@@ -182,8 +182,8 @@ class Game extends React.Component {
 
   render(){
     return(
-      <div>
-        { this.state.winner ? <h1>this.state.winner</h1> : null}
+      <div className="noselect">
+        { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
         <h1> {this.props.openGameroom.id} </h1>
         <h2> Letters remaining: {this.props.openGameroom.letters.length} </h2>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
