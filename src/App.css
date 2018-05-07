@@ -70,8 +70,24 @@
 } */
 
 img {
-  position: absolute;
-  z-index: 1;
   margin: auto;
-  display: block;
+  z-index: 1 !important;
+}
+
+.table {
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  right: 0%;
+  z-index: 2 !important;
+}
+
+.tableboard {
+  position: relative;
+  margin: auto;
+  width: 850px;
+}
+
+.tablesquare {
+  visibility: hidden;
 }
