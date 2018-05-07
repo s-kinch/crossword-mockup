@@ -73,10 +73,26 @@ class Game extends React.Component {
     // console.log(event.dataTransfer)
     // this.pickTile(letter, game)
     let data = event.dataTransfer.getData('text')
+    console.log(data);
     data = data.split(',')
     const letter = data[0]
     const game = data[1]
-    this.pickTile(letter, game)
+
+    if (!this.state.game_started) {
+      this.pickTile(letter, game)
+    } else {
+      let start_row = data[2]
+      let start_column = data[3]
+      let board_letters_copy = this.state.board_letters.map(function(arr) {return arr.slice()})
+      let letter = this.state.board_letters[start_row][start_column]
+
+      board_letters_copy[start_row][start_column] = null
+
+      this.setState({
+        player_letters: [...this.state.player_letters, letter],
+        board_letters: board_letters_copy
+      })
+    }
   }
 
   onBoardDrop = (event) => {
@@ -84,20 +100,31 @@ class Game extends React.Component {
     let letter_id = data[0]
     let start_row = data[2]
     let start_column = data[3]
-    let letter= this.state.player_letters.find(l => l.id === parseInt(letter_id)) || this.state.board_letters[start_row][start_column]
-    console.log(letter);
     let coordinates = event.target.id.split(',')
     let row = coordinates[0]
     let column = coordinates[1]
-
+    console.log(row)
     let board_letters_copy = this.state.board_letters.map(function(arr) {return arr.slice()})
-    board_letters_copy[row][column] = letter
-    let letter_index = this.state.player_letters.indexOf(letter)
+    if (row && column) {
+      if (start_row && start_column) {
+        let letter = this.state.board_letters[start_row][start_column]
+        board_letters_copy[row][column] = letter
+        board_letters_copy[start_row][start_column] = null
+        this.setState({
+          board_letters: board_letters_copy
+        })
+      } else {
+        let letter = this.state.player_letters.find(l => l.id === parseInt(letter_id)) || this.state.board_letters[start_row][start_column]
 
-    this.setState({
-      board_letters: board_letters_copy,
-      player_letters: [...this.state.player_letters.slice(0,letter_index), ...this.state.player_letters.slice(letter_index+1)]
-    })
+        board_letters_copy[row][column] = letter
+        let letter_index = this.state.player_letters.indexOf(letter)
+
+        this.setState({
+          board_letters: board_letters_copy,
+          player_letters: [...this.state.player_letters.slice(0,letter_index), ...this.state.player_letters.slice(letter_index+1)]
+        })
+      }
+    }
   }
 
   onDragStart = (event, letter, game={id:0}, position) => {
