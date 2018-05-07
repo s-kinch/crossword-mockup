@@ -10,7 +10,8 @@ const URL = 'http://localhost:3000/api/v1/'
 class Game extends React.Component {
 
   state = {
-    player_letters: []
+    player_letters: [],
+    board_letters: []
   }
 
   handleSocketResponse = data => {
@@ -77,7 +78,17 @@ class Game extends React.Component {
     this.pickTile(letter, game)
   }
 
-  onDragStart = (event, letter, game) => {
+  onBoardDrop = (event) => {
+    let data = event.dataTransfer.getData('text')
+    data = data.split(',')
+    const letter_id = data[0]
+    let letter= this.state.player_letters.find(l => l.id === parseInt(letter_id))
+    this.setState({
+      board_letters: [...this.state.board_letters, letter]
+    })
+  }
+
+  onDragStart = (event, letter, game={id:0}) => {
     const data = `${letter.id},${game.id}`
     // console.log(data)
     event.dataTransfer.setData('text', data)
@@ -110,10 +121,10 @@ class Game extends React.Component {
 
         {
           this.state.player_letters.length === 1 ?
-          <Gameboard /> :
+          <Gameboard onBoardDrop={this.onBoardDrop}/> :
           <Pile onDrop={this.onDrop} onDragStart={this.onDragStart} shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
         }
-        <TileContainer onDrop={this.onDrop} onDragStart={() => alert('jdskl')} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
+        <TileContainer onDrop={this.onDrop} onDragStart={this.onDragStart} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
       </div>
     )
   }
