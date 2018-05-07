@@ -12,7 +12,9 @@ class Game extends React.Component {
   state = {
     player_letters: [],
     board_letters: Array(15).fill(Array(15).fill(null)),
-    game_started: null
+    game_started: null,
+    number_of_players: null,
+    winner: null
   }
 
   handleSocketResponse = data => {
@@ -21,9 +23,14 @@ class Game extends React.Component {
       		this.props.removeLetter(data.payload.letter_id)
        		break;
       case "PEEL_LETTER":
+          this.props.peelLetter(data.payload.users_letters)
           this.setState({
-            player_letters: [...this.state.player_letters, data.payload.users_letters[this.props.currentUser.id]]
+            player_letters: [...this.state.player_letters, data.payload.users_letters[this.props.currentUser.id]],
+            number_of_players: Object.keys(data.payload.users_letters).length
           })
+          break;
+      case "WINNER":
+          this.setState({winner: data.payload.winner})
           break;
       default:
         console.log(data);
@@ -78,7 +85,6 @@ class Game extends React.Component {
     // console.log(event.dataTransfer)
     // this.pickTile(letter, game)
     let data = event.dataTransfer.getData('text')
-    console.log(data);
     data = data.split(',')
     const letter = data[0]
     const game = data[1]
@@ -108,7 +114,6 @@ class Game extends React.Component {
     let coordinates = event.target.id.split(',')
     let row = coordinates[0]
     let column = coordinates[1]
-    console.log(row)
     let board_letters_copy = this.state.board_letters.map(function(arr) {return arr.slice()})
     if (row && column) {
       if (start_row && start_column) {
@@ -134,12 +139,11 @@ class Game extends React.Component {
 
   onDragStart = (event, letter, game={id:0}, position) => {
     const data = `${letter.id},${game.id},${position}`
-    console.log(data)
     event.dataTransfer.setData('text', data)
   }
 
   pickTile = (letterId, gameId) => {
-    if (this.state.player_letters.length === 20) {
+    if (this.state.player_letters.length === 3) {
       this.setState({
         game_started: true
       })
@@ -161,19 +165,35 @@ class Game extends React.Component {
   }
 
   peel = () => {
-    console.log(this.props.openGameroom.id)
     fetch(URL + `games/${this.props.openGameroom.id}/peel`)
   }
 
+  win = () => {
+    fetch(URL + `games/${this.props.openGameroom.id}/winner`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        user: this.props.currentUser
+      })
+    })
+  }
+
   render(){
-    // console.log(this.props.openGameroom)
-    // console.log(this.state.board_letters)
     return(
       <div>
+        { this.state.winner ? <h1>this.state.winner</h1> : null}
         <h1> {this.props.openGameroom.id} </h1>
+        <h2> Letters remaining: {this.props.openGameroom.letters.length} </h2>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
         <button onClick={this.props.leaveGame}>Leave Game</button>
-        <button onClick={this.peel}>Peel</button>
+
+        {
+          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0  ?
+          this.win() :
+          <button onClick={this.peel}>Peel</button>
+        }
 
         { this.state.game_started ?
           <Gameboard onBoardDrop={this.onBoardDrop} board_letters={this.state.board_letters} onDragStart={this.onDragStart}/> :

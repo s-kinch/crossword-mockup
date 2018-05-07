@@ -93,6 +93,21 @@ class App extends Component {
 
 	}
 
+  peelLetter = (users_letters) => {
+    console.log('here')
+    Object.values(users_letters).forEach(letter => this.removeLetter(letter.id))
+
+    // let newLetters = this.state.openGameroom.letters.filter(letter => letter.id !== letter_id)
+    //
+		// let newGameroom = {...this.state.openGameroom}
+    //
+		// newGameroom.letters = newLetters
+    //
+		// this.setState({
+		// 	openGameroom: newGameroom
+		// })
+  }
+
   // MySignIn = () => {
   //   return (<SignIn signIn={this.signIn} />)
   // }
@@ -112,7 +127,7 @@ class App extends Component {
           <Route exact path='/signin' render={this.MySignIn} />
           */}
 
-          {this.state.openGameroom ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser} removeLetter = {this.removeLetter}/> :
+          {this.state.openGameroom ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser} removeLetter = {this.removeLetter} peelLetter={this.peelLetter}/> :
           <div>
             <SignIn signIn={this.signIn} />
             <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick} createGame={this.createGame}/>
