@@ -11,7 +11,8 @@ class Game extends React.Component {
 
   state = {
     player_letters: [],
-    board_letters: []
+    board_letters: Array(15).fill(Array(15).fill(null)),
+    game_started: null
   }
 
   handleSocketResponse = data => {
@@ -79,24 +80,40 @@ class Game extends React.Component {
   }
 
   onBoardDrop = (event) => {
-    let data = event.dataTransfer.getData('text')
-    data = data.split(',')
-    const letter_id = data[0]
-    let letter= this.state.player_letters.find(l => l.id === parseInt(letter_id))
+    const data = event.dataTransfer.getData('text').split(',')
+    let letter_id = data[0]
+    let start_row = data[2]
+    let start_column = data[3]
+    let letter= this.state.player_letters.find(l => l.id === parseInt(letter_id)) || this.state.board_letters[start_row][start_column]
+    console.log(letter);
+    let coordinates = event.target.id.split(',')
+    let row = coordinates[0]
+    let column = coordinates[1]
+
+    let board_letters_copy = this.state.board_letters.map(function(arr) {return arr.slice()})
+    board_letters_copy[row][column] = letter
+    let letter_index = this.state.player_letters.indexOf(letter)
+
     this.setState({
-      board_letters: [...this.state.board_letters, letter]
+      board_letters: board_letters_copy,
+      player_letters: [...this.state.player_letters.slice(0,letter_index), ...this.state.player_letters.slice(letter_index+1)]
     })
   }
 
-  onDragStart = (event, letter, game={id:0}) => {
-    const data = `${letter.id},${game.id}`
-    // console.log(data)
+  onDragStart = (event, letter, game={id:0}, position) => {
+    const data = `${letter.id},${game.id},${position}`
+    console.log(data)
     event.dataTransfer.setData('text', data)
   }
 
   pickTile = (letterId, gameId) => {
+    if (this.state.player_letters.length === 2) {
+      this.setState({
+        game_started: true
+      })
+    }
     this.setState({
-      player_letters: [...this.state.player_letters, this.props.openGameroom.letters.find(x => x.id === parseInt(letterId))]
+      player_letters: [...this.state.player_letters, this.props.openGameroom.letters.find(x => x.id === parseInt(letterId))],
     })
     fetch(URL + `letters/${letterId}`, {
       method: 'DELETE',
@@ -112,16 +129,16 @@ class Game extends React.Component {
   }
 
   render(){
-    console.log(this.props.openGameroom)
+    // console.log(this.props.openGameroom)
+    // console.log(this.state.board_letters)
     return(
       <div>
         <h1> {this.props.openGameroom.id} </h1>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
         <button onClick={this.props.leaveGame}>Leave Game</button>
 
-        {
-          this.state.player_letters.length === 1 ?
-          <Gameboard onBoardDrop={this.onBoardDrop}/> :
+        { this.state.game_started ?
+          <Gameboard onBoardDrop={this.onBoardDrop} board_letters={this.state.board_letters} onDragStart={this.onDragStart}/> :
           <Pile onDrop={this.onDrop} onDragStart={this.onDragStart} shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
         }
         <TileContainer onDrop={this.onDrop} onDragStart={this.onDragStart} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
