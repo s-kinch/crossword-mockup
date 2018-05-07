@@ -4,26 +4,17 @@ class Gameboard extends React.Component {
 
   render(){
     const grid = []
-    for (let i = 0; i < 225; i++){
-      grid.push(
-
-      <div className="column square" >
-        <div className="ui card" >
-          <div className="content">
-            { i }
-          </div>
-        </div>
-      </div>
-      )
+    for (let i = 0; i < 15; i++){
+      for (let j = 0; j < 15; j++){
+        grid[i]=<div className="square">{ i }</div>
     }
+  }
 
 
     return(
-      <div className="ui page grid gameboard" >
-        <div className="fifteen column row">
-          <img className="board" src="/board.png"/>
-          {grid}
-        </div>
+      <div className="table">
+        <img className="board" src="/board.png"/>
+        {grid}
       </div>
 
     )

@@ -53,17 +53,25 @@
   display: block;
 }
 
+.table {
+  display: flex;
+  flex-direction:row;
+}
 
-.ui.grid>.row>.column.square  {
+
+
+/* .ui.grid>.row>.column.square  {
   z-index: 2;
   margin: 0 0 0 0;
   padding-left: 0;
   padding-right: 0;
   width: 50px !important;
 
-}
+} */
 
 img {
   position: absolute;
   z-index: 1;
+  margin: auto;
+  display: block;
 }
