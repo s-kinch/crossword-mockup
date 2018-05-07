@@ -64,6 +64,24 @@
 }
 
 img {
+  margin: auto;
+  z-index: 1 !important;
+}
+
+.table {
   position: absolute;
-  z-index: 1;
+  top: 50px;
+  left: 50px;
+  right: 0%;
+  z-index: 2 !important;
+}
+
+.tableboard {
+  position: relative;
+  margin: auto;
+  width: 850px;
+}
+
+.tablesquare {
+  visibility: hidden;
 }
