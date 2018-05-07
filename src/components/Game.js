@@ -20,6 +20,11 @@ class Game extends React.Component {
       case "DELETE_LETTER":
       		this.props.removeLetter(data.payload.letter_id)
        		break;
+      case "PEEL_LETTER":
+          this.setState({
+            player_letters: [...this.state.player_letters, data.payload.users_letters[this.props.currentUser.id]]
+          })
+          break;
       default:
         console.log(data);
     }
@@ -134,7 +139,7 @@ class Game extends React.Component {
   }
 
   pickTile = (letterId, gameId) => {
-    if (this.state.player_letters.length === 2) {
+    if (this.state.player_letters.length === 20) {
       this.setState({
         game_started: true
       })
@@ -155,6 +160,11 @@ class Game extends React.Component {
     })
   }
 
+  peel = () => {
+    console.log(this.props.openGameroom.id)
+    fetch(URL + `games/${this.props.openGameroom.id}/peel`)
+  }
+
   render(){
     // console.log(this.props.openGameroom)
     // console.log(this.state.board_letters)
@@ -163,6 +173,7 @@ class Game extends React.Component {
         <h1> {this.props.openGameroom.id} </h1>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
         <button onClick={this.props.leaveGame}>Leave Game</button>
+        <button onClick={this.peel}>Peel</button>
 
         { this.state.game_started ?
           <Gameboard onBoardDrop={this.onBoardDrop} board_letters={this.state.board_letters} onDragStart={this.onDragStart}/> :

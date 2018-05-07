@@ -38,11 +38,22 @@ class App extends Component {
       body: JSON.stringify({
         name: username
       })
-    }).then(this.setState({currentUser: username}))
+    }).then(res => res.json()).then((res) => {
+      this.setState({
+        currentUser: res
+      })
+    })
   }
 
   handleClick = (gameId) => {
-    fetch(URL + `games/${gameId}/join`)
+    console.log(this.state.currentUser)
+    fetch(URL + `games/${gameId}/join`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({user_id: this.state.currentUser.id})
+    })
     .then(resp => resp.json())
     .then(game =>
       this.setState({
