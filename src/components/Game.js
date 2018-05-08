@@ -12,9 +12,15 @@ class Game extends React.Component {
   state = {
     player_letters: [],
     board_letters: Array(15).fill(Array(15).fill(null)),
+    row_words: Array(15).fill([]),
+    column_words: Array(15).fill([]),
     game_started: null,
     number_of_players: null,
-    winner: null
+    winner: null,
+    // row: null,
+    // column: null,
+    // start_row: null,
+    // start_column: null
   }
 
   handleSocketResponse = data => {
@@ -35,7 +41,47 @@ class Game extends React.Component {
       default:
         console.log(data);
     }
+  }
 
+  checkWords = (row, column, callback = null) => {
+    row = parseInt(row)
+    column = parseInt(column)
+
+    let row_letters = []
+    let column_letters = []
+
+    for (let i = 0; i < 15; i++){
+      if (this.state.board_letters[row][i]){
+        row_letters.push(this.state.board_letters[row][i].value)
+      } else {
+        row_letters.push(null)
+      }
+
+      if (this.state.board_letters[i][column]){
+        column_letters.push(this.state.board_letters[i][column].value)
+      } else {
+        column_letters.push(null)
+      }
+    }
+
+    const new_row_words = row_letters.join('').split(/  */)
+    const new_column_words = column_letters.join('').split(/  */)
+    let row_words_copy = this.state.row_words.slice()
+    let column_words_copy = this.state.column_words.slice()
+
+    row_words_copy[row] = new_row_words
+    column_words_copy[column] = new_column_words
+
+    this.setState({
+      row_words: row_words_copy,
+      column_words: column_words_copy
+    }, () => {
+      if (callback) {
+        callback()
+      } else {
+        // fetchFunction
+      }
+    })
   }
 
   // componentDidMount = () => {
@@ -121,7 +167,13 @@ class Game extends React.Component {
         board_letters_copy[row][column] = letter
         board_letters_copy[start_row][start_column] = null
         this.setState({
-          board_letters: board_letters_copy
+          board_letters: board_letters_copy,
+          // row: row,
+          // column: column,
+          // start_row: start_row,
+          // start_column: start_column
+        }, () => {
+          this.checkWords(row, column, () => this.checkWords(start_row, start_column))
         })
         if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
           this.win()
@@ -135,11 +187,15 @@ class Game extends React.Component {
         this.setState({
           board_letters: board_letters_copy,
           player_letters: [...this.state.player_letters.slice(0,letter_index), ...this.state.player_letters.slice(letter_index+1)]
-        }, () => {if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
-          this.win()
-        }})
+        }, () => {
+          this.checkWords(row, column)
 
-      
+          if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
+            this.win()
+          }
+        })
+
+
       }
     }
   }
@@ -188,7 +244,8 @@ class Game extends React.Component {
   }
 
   render(){
-    console.log(this.state.player_letters);
+    console.log(this.state.row_words, this.state.column_words);
+    console.log(this.state.board_letters);
     return(
       <div className="noselect">
         { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
