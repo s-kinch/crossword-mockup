@@ -275,7 +275,7 @@ class Game extends React.Component {
         <div> Invalid words: <ul>{invalid_words}</ul> </div>
 
         {
-          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) ?
+          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.invalid_words.length === 0 ?
           null :
           <button onClick={this.peel}>Peel</button>
         }
