@@ -43,7 +43,7 @@ class Game extends React.Component {
     }
   }
 
-  checkWords = (row, column, callback = null) => {
+  storeWords = (row, column, callback = null) => {
     row = parseInt(row)
     column = parseInt(column)
 
@@ -79,9 +79,23 @@ class Game extends React.Component {
       if (callback) {
         callback()
       } else {
-        // fetchFunction
+        this.checkWords()
       }
     })
+  }
+
+  checkWords = () => {
+    let all_words = this.state.row_words.reduce((a,b) => a.concat(b)).concat(this.state.column_words.reduce((a,b) => a.concat(b)))
+    all_words = all_words.filter(word => word.length > 1)
+    fetch(URL + `letters/check`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        words: all_words
+      })
+    }).then(res => res.json()).then(console.log)
   }
 
   // componentDidMount = () => {
@@ -173,7 +187,7 @@ class Game extends React.Component {
           // start_row: start_row,
           // start_column: start_column
         }, () => {
-          this.checkWords(row, column, () => this.checkWords(start_row, start_column))
+          this.storeWords(row, column, () => this.storeWords(start_row, start_column))
         })
         if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
           this.win()
@@ -188,7 +202,7 @@ class Game extends React.Component {
           board_letters: board_letters_copy,
           player_letters: [...this.state.player_letters.slice(0,letter_index), ...this.state.player_letters.slice(letter_index+1)]
         }, () => {
-          this.checkWords(row, column)
+          this.storeWords(row, column)
 
           if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
             this.win()
@@ -244,8 +258,8 @@ class Game extends React.Component {
   }
 
   render(){
-    console.log(this.state.row_words, this.state.column_words);
-    console.log(this.state.board_letters);
+    // console.log(this.state.row_words, this.state.column_words);
+    // console.log(this.state.board_letters);
     return(
       <div className="noselect">
         { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
