@@ -123,6 +123,9 @@ class Game extends React.Component {
         this.setState({
           board_letters: board_letters_copy
         })
+        if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
+          this.win()
+        }
       } else {
         let letter = this.state.player_letters.find(l => l.id === parseInt(letter_id)) || this.state.board_letters[start_row][start_column]
 
@@ -132,7 +135,11 @@ class Game extends React.Component {
         this.setState({
           board_letters: board_letters_copy,
           player_letters: [...this.state.player_letters.slice(0,letter_index), ...this.state.player_letters.slice(letter_index+1)]
-        })
+        }, () => {if ((this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0 && this.state.winner===null) {
+          this.win()
+        }})
+
+      
       }
     }
   }
@@ -181,6 +188,7 @@ class Game extends React.Component {
   }
 
   render(){
+    console.log(this.state.player_letters);
     return(
       <div className="noselect">
         { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
@@ -190,8 +198,8 @@ class Game extends React.Component {
         <button onClick={this.props.leaveGame}>Leave Game</button>
 
         {
-          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.player_letters.length === 0  ?
-          this.win() :
+          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) ?
+          null :
           <button onClick={this.peel}>Peel</button>
         }
 
