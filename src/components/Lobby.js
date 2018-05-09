@@ -28,14 +28,14 @@ class Lobby extends React.Component {
 
     return(
       <div className="lobby-container">
-        <table className="lobby">
+        <table className="centered">
           <tbody>
             <tr>
               {tiletitle}
             </tr>
           </tbody>
         </table>
-        <div className="creategame"><button onClick={this.props.createGame} className="ui yellow submit button">Create Game</button></div>
+        <div className="centered"><button onClick={this.props.createGame} className="ui yellow submit button">Create Game</button></div>
         <div className="ui four stackable cards">
           {games}
         </div>

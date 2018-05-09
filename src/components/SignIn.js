@@ -26,7 +26,7 @@ class SignIn extends React.Component {
     let tiletitle = title.map(letter => <td><Tile letter = {letter} /></td>)
     return(
       <div className="loginscreen">
-        <table className="bananagrams">
+        <table className="centered">
           <tbody>
             <tr>
               {tiletitle}
