@@ -155,17 +155,19 @@ class Game extends React.Component {
     if (!this.state.game_started) {
       this.pickTile(letter, game)
     } else {
-      let start_row = data[2]
-      let start_column = data[3]
-      let board_letters_copy = this.state.board_letters.map(function(arr) {return arr.slice()})
-      let letter = this.state.board_letters[start_row][start_column]
+        let start_row = data[2]
+        let start_column = data[3]
+      if (start_row && start_column) {
+        let board_letters_copy = this.state.board_letters.map(function(arr) {return arr.slice()})
+        let letter = this.state.board_letters[start_row][start_column]
 
-      board_letters_copy[start_row][start_column] = null
+        board_letters_copy[start_row][start_column] = null
 
-      this.setState({
-        player_letters: [...this.state.player_letters, letter],
-        board_letters: board_letters_copy
-      })
+        this.setState({
+          player_letters: [...this.state.player_letters, letter],
+          board_letters: board_letters_copy
+        })
+      }
     }
   }
 
