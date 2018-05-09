@@ -275,9 +275,8 @@ class Game extends React.Component {
                 <div className="six wide column" style={{padding: 5}}>
                   { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
                   {
-                    this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) ?
-                    null :
-                    <div className="centered game"><button onClick={this.peel} className="ui yellow submit button">Peel</button></div>
+                    this.state.game_started ?
+                    <div className="centered game"><button onClick={this.peel} className="ui yellow submit button">Peel</button></div>: null
                   }
                 </div>
                 <div className="five wide column" style={{textAlign: "right", padding: 5}}>

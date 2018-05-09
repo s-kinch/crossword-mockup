@@ -25,7 +25,7 @@ class App extends Component {
     fetch(URL + 'games')
     .then(res => res.json())
     .then(res => this.setState({
-      games: res
+      games: res.reverse()
     }))
   }
 
@@ -76,7 +76,7 @@ class App extends Component {
       body: JSON.stringify({})
     }).then(res => res.json()).then(game =>
       this.setState({
-        games: [...this.state.games, game]
+        games: [game, ...this.state.games]
       }))
   }
 

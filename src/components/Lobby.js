@@ -22,6 +22,7 @@ class Lobby extends React.Component {
 
     })
 
+
     const title = [{value: "L"}, {value: "O"}, {value: "B"}, {value: "B"}, {value: "Y"}]
     let tiletitle = title.map(letter => <td><Tile letter = {letter} /></td>)
 
