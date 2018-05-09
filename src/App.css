@@ -21,7 +21,7 @@
   background-color: #222;
   height: 150px;
   padding: 20px;
-  color: white;
+  color: black;
 }
 
 .App-title {
@@ -104,4 +104,32 @@ img {
 td {
   width: 50px;
   height: 50px;
+}
+
+.loginscreen {
+  margin: auto;
+  text-align: center;
+  transform: translate(0%, 300%);
+}
+
+.bananagrams {
+  margin: 0px auto 25px;
+}
+
+.creategame {
+  margin: auto;
+  text-align: center;
+}
+
+.lobby-container {
+  width: 80%;
+  margin: auto;
+}
+
+.creategame{
+  margin: 25px auto 25px;
+}
+
+.lobby {
+  margin: 25px auto 25px;
 }

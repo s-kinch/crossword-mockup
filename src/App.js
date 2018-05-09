@@ -118,6 +118,7 @@ class App extends Component {
 
   render() {
     console.log(this.state.openGameroom);
+    console.log(this.state.currentUser);
     return (
       <Router>
         <div>
@@ -126,13 +127,9 @@ class App extends Component {
           <Route exact path='/lobby' render={this.MyLobby} />
           <Route exact path='/signin' render={this.MySignIn} />
           */}
-
-          {this.state.openGameroom ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser} removeLetter = {this.removeLetter} peelLetter={this.peelLetter}/> :
-          <div>
-            <SignIn signIn={this.signIn} />
-            <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick} createGame={this.createGame}/>
-          </div>
-           }
+          {this.state.currentUser ? null : <SignIn signIn={this.signIn} />}
+          {this.state.openGameroom && this.state.currentUser ? <Game openGameroom={this.state.openGameroom} leaveGame={this.leaveGame} currentUser={this.state.currentUser} removeLetter = {this.removeLetter} peelLetter={this.peelLetter}/>: null}
+          {!this.state.openGameroom && this.state.currentUser ? <Lobby currentUser={this.state.currentUser} games={this.state.games} handleClick={this.handleClick} createGame={this.createGame}/> : null}
         </div>
       </Router>
     )

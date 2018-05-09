@@ -17,7 +17,6 @@ class Game extends React.Component {
     game_started: null,
     number_of_players: null,
     winner: null,
-    invalid_words: []
     // row: null,
     // column: null,
     // start_row: null,
@@ -65,14 +64,13 @@ class Game extends React.Component {
       }
     }
 
-    const new_row_words = row_letters.map(x => x ? x : ' ').join('').split(/  */).filter(x => x !== "")
-    const new_column_words = column_letters.map(x => x ? x : ' ').join('').split(/  */).filter(x => x !== "")
+    const new_row_words = row_letters.join('').split(/  */)
+    const new_column_words = column_letters.join('').split(/  */)
     let row_words_copy = this.state.row_words.slice()
     let column_words_copy = this.state.column_words.slice()
 
     row_words_copy[row] = new_row_words
     column_words_copy[column] = new_column_words
-
 
     this.setState({
       row_words: row_words_copy,
@@ -97,9 +95,7 @@ class Game extends React.Component {
       body: JSON.stringify({
         words: all_words
       })
-    }).then(res => res.json()).then(res => this.setState({
-      invalid_words: Object.keys(res)
-    }))
+    }).then(res => res.json()).then(console.log)
   }
 
   // componentDidMount = () => {
@@ -264,7 +260,6 @@ class Game extends React.Component {
   render(){
     // console.log(this.state.row_words, this.state.column_words);
     // console.log(this.state.board_letters);
-    const invalid_words = this.state.invalid_words.map(word => <li key={word}>{word}</li>)
     return(
       <div className="noselect">
         { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
@@ -272,10 +267,9 @@ class Game extends React.Component {
         <h2> Letters remaining: {this.props.openGameroom.letters.length} </h2>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
         <button onClick={this.props.leaveGame}>Leave Game</button>
-        <div> Invalid words: <ul>{invalid_words}</ul> </div>
 
         {
-          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) && this.state.invalid_words.length === 0 ?
+          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) ?
           null :
           <button onClick={this.peel}>Peel</button>
         }
