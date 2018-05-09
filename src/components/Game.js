@@ -263,7 +263,7 @@ class Game extends React.Component {
   render(){
     // console.log(this.state.row_words, this.state.column_words);
     // console.log(this.state.board_letters);
-    const invalid_words = this.state.invalid_words.map(word => <li key={word}>{word}</li>)
+    const invalid_words = this.state.invalid_words.map(word => <li><a class="ui red label" key={word}>{word}</a></li>)
     return(
       <div className="noselect">
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>

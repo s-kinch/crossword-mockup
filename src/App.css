@@ -125,7 +125,7 @@ td {
 .segment {
   position: fixed !important;
   width: 100%;
-  z-index: 2;
+  z-index: 3;
 }
 
 .centered.game {
@@ -136,6 +136,20 @@ td {
 .words {
   position: fixed;
   top: 100px;
+}
+
+.context {
+  position: absolute;
+  top: 75px;
+  width: 100%;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  padding: 2%;
 }
 
 /* .gameroom {
