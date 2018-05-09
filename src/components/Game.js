@@ -266,24 +266,34 @@ class Game extends React.Component {
     const invalid_words = this.state.invalid_words.map(word => <li key={word}>{word}</li>)
     return(
       <div className="noselect">
-        { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
-        <h1> {this.props.openGameroom.id} </h1>
-        <h2> Letters remaining: {this.props.openGameroom.letters.length} </h2>
         <ActionCable channel={{ channel: 'GameChannel', game_id: this.props.openGameroom.id}} onReceived={this.handleSocketResponse}/>
-        <button onClick={this.props.leaveGame} className="ui yellow submit button">Leave Game</button>
-        <div> Invalid words: <ul>{invalid_words}</ul> </div>
-
-        {
-          this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) ?
-          null :
-          <div className="centered"><button onClick={this.peel} className="ui yellow submit button">Peel</button></div>
-        }
+        <div className="ui segment">
+          <div className="ui stackable grid">
+                <div className="five wide column" style={{textAlign: "left", padding: 5}}>
+                  <div><h2> Letters remaining: {this.props.openGameroom.letters.length} </h2></div>
+                </div>
+                <div className="six wide column" style={{padding: 5}}>
+                  { this.state.winner ? <h1>{this.state.winner} won!!!!!!</h1> : null}
+                  {
+                    this.state.game_started && (this.state.number_of_players > this.props.openGameroom.letters.length) ?
+                    null :
+                    <div className="centered game"><button onClick={this.peel} className="ui yellow submit button">Peel</button></div>
+                  }
+                </div>
+                <div className="five wide column" style={{textAlign: "right", padding: 5}}>
+                  <button onClick={this.props.leaveGame} className="ui yellow submit button">Leave Game</button>
+                </div>
+          </div>
+        </div>
+        <div className="words"><h1> Invalid words: </h1><ul>{invalid_words}</ul> </div>
+        <div className="context">
 
         { this.state.game_started ?
           <Gameboard onBoardDrop={this.onBoardDrop} board_letters={this.state.board_letters} onDragStart={this.onDragStart}/> :
           <Pile onDrop={this.onDrop} onDragStart={this.onDragStart} shuffled_letters={this.shuffle(this.props.openGameroom.letters)} pickTile={this.pickTile} openGameroom= {this.props.openGameroom}/>
         }
         <TileContainer onDrop={this.onDrop} onDragStart={this.onDragStart} available_letters={this.state.available_letters} getRandomLetter = {this.getRandomLetter} player_letters={this.state.player_letters} />
+        </div>
       </div>
     )
   }

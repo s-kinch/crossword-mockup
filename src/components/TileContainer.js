@@ -24,7 +24,7 @@ class TileContainer extends React.Component {
       second_column = this.props.player_letters.slice(11).map(letter => <Tile onDragStart={this.props.onDragStart} key={letter.id} letter={letter}/>)
     }
     return(
-      <div onDragOver={(e) => e.preventDefault()} onDrop={this.props.onDrop}>
+      <div onDragOver={(e) => e.preventDefault()} onDrop={this.props.onDrop}> 
         {/*<button onClick={this.takeLetter}>Take Tile</button>*/}
         <h1 className="tile container header"> Your Tiles </h1>
         <div className="ui page grid" >
