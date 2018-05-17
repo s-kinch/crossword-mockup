@@ -10,6 +10,7 @@
 
 .App {
   text-align: center;
+  background-color: #fff !important;
 }
 
 .App-logo {
@@ -84,26 +85,25 @@ img {
 }
 
 .table {
-  position: absolute;
+  /* position: relative;
   top: 50px;
   left: 50px;
-  right: 0%;
-  z-index: 2 !important;
+  right: 0%; */
+  padding: 20px;
 }
 
-.tableboard {
-  position: relative;
+.container {
   margin: auto;
-  width: 850px;
 }
 
-.tablesquare {
-  visibility: hidden;
-}
 
 td {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  background: #fff;
+  overflow: hidden;
+  position: relative;
 }
 
 .loginscreen {
@@ -138,6 +138,10 @@ td {
   top: 100px;
 }
 
+.words h1 {
+  font-size: 100%;
+}
+
 .context {
   position: absolute;
   top: 75px;
@@ -152,10 +156,62 @@ li {
   padding: 2%;
 }
 
-/* .gameroom {
-  display: inline-block;
+input[type=text] {
+  background: none;
+  width: 100%;
+  line-height: 100%;
+  border: none;
+  padding: 3%;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 150%;
+  text-transform: uppercase;
+  font-weight: bold;
 }
 
-.letters {
-  display: inline-block;
-} */
+input[type=text]:focus {
+    /* background-color: lightblue; */
+    outline: none;
+}
+
+#nav {
+  display: flex;
+  flex-direction:row;
+}
+
+.navlink {
+  padding: 20px;
+}
+
+.flex-container {
+  display: flex;
+  margin: auto;
+}
+
+#toggle {
+  width: 30px;
+  height: 30px;
+  background: #000;
+  border-top: 30px solid #fff;
+  border-right: 30px solid transparent;
+}
+
+.number {
+  font-size: 10px;
+  color: rgba(0,0,0,.4) !important;
+  position: absolute;
+  top: 0px;
+  left: 1px;
+}
+
+.letter {
+  font-size: 16px !important;
+  line-height: 10px !important;
+  position: absolute;
+  left: 30%;
+  top: 40%;
+  color: #000;
+  z-index: 3;
+  font-family: 'Source Code Pro', monospace;
+}
