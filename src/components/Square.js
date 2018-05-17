@@ -11,21 +11,31 @@ class Square extends React.Component {
     const coords = this.props.id.split(',')
     const xCoord = parseInt(coords[0])
     const yCoord = parseInt(coords[1])
+    const selectedWord = this.getSelectedWord()
 
     if (this.props.value.black) {
       return "black"
     } else if (xCoord === this.props.selected.x && yCoord === this.props.selected.y) {
       return "#af5d89"
-    } else if (this.props.across && xCoord === this.props.selected.x) {
+    } else if (selectedWord && this.props.across && xCoord === this.props.selected.x && selectedWord[0].y <= yCoord && selectedWord[selectedWord.length - 1].y >= yCoord) {
       return "#d396b7"
-    } else if (!this.props.across && yCoord === this.props.selected.y) {
+    } else if (selectedWord && !this.props.across && yCoord === this.props.selected.y && selectedWord[0].x <= xCoord && selectedWord[selectedWord.length - 1].x >= xCoord) {
       return "#d396b7"
     } else {
       return "white"
     }
   }
 
+  getSelectedWord = () => {
+    if (this.props.across){
+      return this.props.acrossWords.find(word => word.filter(letter => letter.x === this.props.selected.x && letter.y === this.props.selected.y).length === 1)
+    } else {
+      return this.props.downWords.find(word => word.filter(letter => letter.x === this.props.selected.x && letter.y === this.props.selected.y).length === 1)
+    }
+  }
+
   render(){
+
     return(
       <td onClick={this.handleClick} onDragEnter={this.handleClick} style={{backgroundColor: this.getSquareColor()}} >
       <div>

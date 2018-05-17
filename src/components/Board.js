@@ -12,13 +12,16 @@ class Board extends React.Component {
       toggle: true,
       radialSymmetry: false,
       across: true,
-      selected: {x: null, y: null}
+      selected: {x: null, y: null},
+      acrossWords: [],
+      downWords: []
     }
 
   }
 
   componentDidMount(){
     this.updateNumbers()
+    this.updateWords()
   }
 
   setMode = (mode) => {
@@ -35,6 +38,8 @@ class Board extends React.Component {
       const row = []
       for (let j = 0; j < 15; j++){
         row.push(JSON.parse(JSON.stringify(defaultSquare)))
+        row[j].x = i
+        row[j].y = j
       }
       defaultSquares.push(row)
     }
@@ -109,7 +114,10 @@ class Board extends React.Component {
 
     this.setState({
       squares: squaresCopy
-    }, this.updateNumbers(x, y))
+    }, ()=> {
+      this.updateNumbers(x, y)
+      this.updateWords()
+    })
   }
 
   addLetter = (e) => {
@@ -158,8 +166,68 @@ class Board extends React.Component {
       this.setState({
         squares: squaresCopy,
         selected: nextSelected
-      })
+      }, this.updateWords)
     }
+  }
+
+  updateWords = () => {
+    const newAcrossWords = []
+
+    for (let i = 0; i < 15; i++){
+
+    	let acrossWord = []
+
+    	for (let j = 0; j < 15; j++){
+    		if (!this.state.squares[i][j].black){
+
+    			acrossWord.push(this.state.squares[i][j])
+
+          if (j === 14){
+            newAcrossWords.push(acrossWord)
+            acrossWord = []
+          }
+
+      	} else {
+
+          if (acrossWord.length > 0){
+      			newAcrossWords.push(acrossWord)
+      			acrossWord = []
+          }
+        }
+      }
+    }
+
+
+    const newDownWords = []
+
+    for (let j = 0; j < 15; j++){
+
+    	let downWord = []
+
+    	for (let i = 0; i < 15; i++){
+    		if (!this.state.squares[i][j].black){
+
+          downWord.push(this.state.squares[i][j])
+
+          if (i === 14){
+            newDownWords.push(downWord)
+            downWord = []
+          }
+
+      	} else {
+
+          if (downWord.length > 0){
+      			newDownWords.push(downWord)
+      			downWord = []
+          }
+        }
+      }
+    }
+
+    this.setState({
+      acrossWords: newAcrossWords,
+      downWords: newDownWords
+    })
   }
 
   // tab, shift + tab, space, backspace, enter, arrow keys
@@ -173,7 +241,7 @@ class Board extends React.Component {
       <tr key={`${i}`}>
         {
           row.map((squareValue, j) => (
-              <Square key={`${i},${j}`} id={`${i},${j}`} value={squareValue} handleClick={this.state.mode === 'layout' ? this.toggleBlack : this.selectSquare} selected={this.state.selected} across={this.state.across}/>
+              <Square key={`${i},${j}`} id={`${i},${j}`} value={squareValue} handleClick={this.state.mode === 'layout' ? this.toggleBlack : this.selectSquare} selected={this.state.selected} across={this.state.across} acrossWords={this.state.acrossWords} downWords={this.state.downWords}/>
           ))
         }
       </tr>
