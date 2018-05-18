@@ -128,20 +128,56 @@ class Board extends React.Component {
       let squaresCopy = [...this.state.squares]
       const selectedX = this.state.selected.x
       const selectedY = this.state.selected.y
-      let xCoord = selectedX
-      let yCoord = selectedY
+      let newX = selectedX
+      let newY = selectedY
 
+
+      // if (this.state.squares[selectedX][selectedY].value === ""){
+      //   newX = this.state.across ? selectedX : (selectedX === 0 ? 14 : selectedX - 1)
+      //   newY = this.state.across ? (selectedY === 0 ? 14 : selectedY - 1) : selectedY
+      // }
+      // squaresCopy[newX][newY] = {...squaresCopy[newX][newY], value: ""}
+      //
+      // this.setState({
+      //   squares: squaresCopy,
+      //   selected: {x: newX, y: newY}
+      // })
+
+       // make this skip over black // TODO:
+       // should stay in word if word still has letters right??????????
+       // nah ^ should go to end of prev word if you backspace from start of word
+
+       // if selected is first and empty, go to end of prev word (and delete ?)
+       // else - everything it's doing right now
+
+       // a broken thing: if you click on a black square then press an arrow in text mode
 
       if (this.state.squares[selectedX][selectedY].value === ""){
-        xCoord = this.state.across ? selectedX : (selectedX === 0 ? 14 : selectedX - 1)
-        yCoord = this.state.across ? (selectedY === 0 ? 14 : selectedY - 1) : selectedY
-      }
-      squaresCopy[xCoord][yCoord] = {...squaresCopy[xCoord][yCoord], value: ""}
+        if (this.isLetterFirstInWord(selectedX, selectedY)){
+          const newPosition = this.getPositionOfLastLetterInPrevWord(this.getIndexOfWordThatLetterBelongsTo(selectedX, selectedY))
+          newX = newPosition.x
+          newY = newPosition.y
+        }
+        else {
+          newX = this.state.across ? selectedX : selectedX - 1
+          newY = this.state.across ? selectedY - 1 : selectedY
+          this.setState({
+            selected: {x: newX, y: newY}
+          })
+        }
+      } else {
 
+      }
+
+      squaresCopy[newX][newY] = {...squaresCopy[newX][newY], value: ""}
       this.setState({
         squares: squaresCopy,
-        selected: {x: xCoord, y: yCoord}
+        selected: {x: newX, y: newY}
       })
+
+
+
+
     } else if (e.shiftKey && key === 9){
       this.moveToPrevWord(this.getIndexOfWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y))
     } else if (key === 9){
@@ -227,6 +263,33 @@ class Board extends React.Component {
     } else {
       return false
     }
+  }
+
+  getPositionOfLastLetterInPrevWord = (wordIndex) => {
+    let newSelected
+    let changeDirection = false
+
+    if (this.state.across){
+
+      if (wordIndex === 0){
+        changeDirection = true
+        newSelected = this.state.downWords[this.state.downWords.length - 1][this.state.downWords[this.state.downWords.length -1].length - 1]
+      } else {
+        newSelected = this.state.acrossWords[wordIndex - 1][this.state.acrossWords[wordIndex-1].length - 1]
+      }
+
+    } else {
+
+      if (wordIndex === 0){
+        changeDirection = true
+        newSelected = this.state.acrossWords[this.state.acrossWords.length - 1][0]
+      } else {
+        newSelected = this.state.downWords[wordIndex - 1][this.state.downWords[wordIndex-1].length - 1]
+      }
+
+    }
+
+    return {x: newSelected.x, y: newSelected.y}
   }
 
   getIndexOfWordThatLetterBelongsTo = (x, y) => {
