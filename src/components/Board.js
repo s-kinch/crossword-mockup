@@ -121,13 +121,17 @@ class Board extends React.Component {
   }
 
   addLetter = (e) => {
+    e.preventDefault()
     const key = e.which
+
     if (key === 8){
       let squaresCopy = [...this.state.squares]
       const selectedX = this.state.selected.x
       const selectedY = this.state.selected.y
       let xCoord = selectedX
       let yCoord = selectedY
+
+
       if (this.state.squares[selectedX][selectedY].value === ""){
         xCoord = this.state.across ? selectedX : (selectedX === 0 ? 14 : selectedX - 1)
         yCoord = this.state.across ? (selectedY === 0 ? 14 : selectedY - 1) : selectedY
@@ -138,21 +142,41 @@ class Board extends React.Component {
         squares: squaresCopy,
         selected: {x: xCoord, y: yCoord}
       })
+    } else if (e.shiftKey && key === 9){
+      this.moveToPrevWord(this.getIndexOfWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y))
+    } else if (key === 9){
+      this.moveToNextWord(this.getIndexOfWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y))
     } else if (key === 37){
+      let newSelected = {...this.state.selected, y: this.state.selected.y === 0 ? 14 : this.state.selected.y - 1}
+      while (this.state.squares[newSelected.x][newSelected.y].black){
+        newSelected = {...newSelected, y: newSelected.y === 0 ? 14 : newSelected.y - 1}
+      }
       this.setState({
-        selected: {...this.state.selected, y: this.state.selected.y === 0 ? 14 : this.state.selected.y - 1}
+        selected: newSelected
       })
     } else if (key === 38){
+      let newSelected = {...this.state.selected, x: this.state.selected.x === 0 ? 14: this.state.selected.x - 1}
+      while (this.state.squares[newSelected.x][newSelected.y].black){
+        newSelected = {...newSelected, x: newSelected.x === 0 ? 14 : newSelected.x - 1}
+      }
       this.setState({
-        selected: {...this.state.selected, x: this.state.selected.x === 0 ? 14: this.state.selected.x - 1}
+        selected: newSelected
       })
     } else if (key === 39){
+      let newSelected = {...this.state.selected, y: (this.state.selected.y + 1) % 15}
+      while (this.state.squares[newSelected.x][newSelected.y].black){
+        newSelected = {...newSelected, y: (newSelected.y + 1) % 15}
+      }
       this.setState({
-        selected: {...this.state.selected, y: (this.state.selected.y + 1) % 15}
+        selected: newSelected
       })
     } else if (key === 40){
+      let newSelected = {...this.state.selected, x: (this.state.selected.x + 1) % 15}
+      while (this.state.squares[newSelected.x][newSelected.y].black){
+        newSelected = {...newSelected, x: (newSelected.x + 1) % 15}
+      }
       this.setState({
-        selected: {...this.state.selected, x: (this.state.selected.x + 1) % 15}
+        selected: newSelected
       })
     } else if (key === 32){
       this.toggleDirection()
@@ -168,6 +192,97 @@ class Board extends React.Component {
         selected: nextSelected
       }, this.updateWords)
     }
+  }
+
+  getIndexOfWordThatLetterBelongsTo = (x, y) => {
+    if (this.state.across){
+      return this.state.acrossWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+    } else {
+      return this.state.downWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+    }
+  }
+
+  getIndexOfLetterInItsWord = (x, y) => {
+
+    let word
+    if (this.state.across){
+      word = this.state.acrossWords[this.getIndexOfWordThatLetterBelongsTo(x, y)]
+    } else {
+      word = this.state.downWords[this.getIndexOfWordThatLetterBelongsTo(x, y)]
+    }
+    if (word){
+      return word.findIndex(letter => letter.x === x && letter.y === y)
+    }
+
+  }
+
+  isLetterLastInWord = (x, y) => {
+    return this.getIndexOfLetterInItsWord(x, y) === (this.state.acrossWords[this.getIndexOfWordThatLetterBelongsTo(x, y)].length - 1)
+  }
+
+  isLetterFirstInWord = (x, y) => {
+    return this.getIndexOfLetterInItsWord(x, y) === 0
+  }
+
+  moveToNextWord = (wordIndex) => {
+    let newSelected
+    let changeDirection = false
+
+    if (this.state.across){
+
+      if (this.state.acrossWords.length - 1 === wordIndex){
+        changeDirection = true
+        newSelected = this.state.downWords[0][0]
+      } else {
+        newSelected = this.state.acrossWords[wordIndex + 1][0]
+      }
+
+    } else {
+
+      if (this.state.downWords.length - 1 === wordIndex){
+        changeDirection = true
+        newSelected = this.state.acrossWords[0][0]
+      } else {
+        newSelected = this.state.downWords[wordIndex + 1][0]
+      }
+
+    }
+
+    this.setState({
+      selected: newSelected
+    }, () => {changeDirection? this.toggleDirection() : null })
+
+  }
+
+  moveToPrevWord = (wordIndex) => {
+    let newSelected
+    let changeDirection = false
+
+    if (this.state.across){
+
+      if (wordIndex === 0){
+        changeDirection = true
+        newSelected = this.state.downWords[this.state.downWords.length - 1][0]
+      } else {
+
+        newSelected = this.state.acrossWords[wordIndex - 1][0]
+      }
+
+    } else {
+
+      if (wordIndex === 0){
+        changeDirection = true
+        newSelected = this.state.acrossWords[this.state.acrossWords.length - 1][0]
+      } else {
+        newSelected = this.state.downWords[wordIndex - 1][0]
+      }
+
+    }
+
+    this.setState({
+      selected: newSelected
+    }, () => {changeDirection? this.toggleDirection() : null })
+
   }
 
   updateWords = () => {
@@ -225,8 +340,8 @@ class Board extends React.Component {
     }
 
     this.setState({
-      acrossWords: newAcrossWords,
-      downWords: newDownWords
+      acrossWords: newAcrossWords.sort((a,b) => {return a[0].number - b[0].number}), // sort
+      downWords: newDownWords.sort((a,b) => {return a[0].number - b[0].number}) // sort
     })
   }
 
