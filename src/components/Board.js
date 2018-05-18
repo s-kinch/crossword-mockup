@@ -184,13 +184,48 @@ class Board extends React.Component {
       let squaresCopy = [...this.state.squares]
       let squareToUpdate = squaresCopy[this.state.selected.x][this.state.selected.y]
       squaresCopy[this.state.selected.x][this.state.selected.y] = {...squareToUpdate, value: String.fromCharCode((96 <= key && key <= 105)? key-48 : key)}
-      const nextSelected = this.state.across ? {...this.state.selected, y: (this.state.selected.y + 1) % 15} : {...this.state.selected, x: (this.state.selected.x + 1) % 15}
-      // actually want it to go to the next line or back to beginning of word? or next line if word is full?
-      // beginning of next word
+
+      console.log(this.isLetterLastInWord(this.state.selected.x, this.state.selected.y))
+      if (this.isLetterLastInWord(this.state.selected.x, this.state.selected.y)){
+        if (this.positionOfNextMissingLetterInWord(this.state.selected.x, this.state.selected.y)){
+          this.setState({
+            selected: this.positionOfNextMissingLetterInWord(this.state.selected.x, this.state.selected.y)
+          })
+        } else {
+          this.moveToNextWord(this.getIndexOfWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y))
+        }
+      } else {
+        const nextSelected = this.state.across ? {...this.state.selected, y: (this.state.selected.y + 1) % 15} : {...this.state.selected, x: (this.state.selected.x + 1) % 15}
+        this.setState({
+          selected: nextSelected
+        })
+      }
+
       this.setState({
-        squares: squaresCopy,
-        selected: nextSelected
+        squares: squaresCopy
       }, this.updateWords)
+    }
+  }
+
+  positionOfNextMissingLetterInWord = (x, y) => {
+    console.log('DIRECTION', this.state.across)
+    const word = this.getWordThatLetterBelongsTo(x, y)
+    console.log('WORD', word)
+    const selectedLetterIndex = this.getIndexOfLetterInItsWord(x, y)
+    console.log('SELECTEDLETTERINDEX', selectedLetterIndex)
+
+    const lettersBefore = word.slice(0, selectedLetterIndex)
+    const lettersAfter = word.slice(selectedLetterIndex + 1) // is it fine that this index might be too high? --> just empty array?
+
+    let emptyLetter = lettersAfter.find(letter => letter.value === "")
+    if (!emptyLetter){
+      emptyLetter = lettersBefore.find(letter => letter.value === "")
+    }
+
+    if (emptyLetter){
+      return {x: emptyLetter.x, y: emptyLetter.y}
+    } else {
+      return false
     }
   }
 
@@ -199,6 +234,14 @@ class Board extends React.Component {
       return this.state.acrossWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
     } else {
       return this.state.downWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+    }
+  }
+
+  getWordThatLetterBelongsTo = (x, y) => {
+    if (this.state.across){
+      return this.state.acrossWords.find(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+    } else {
+      return this.state.downWords.find(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
     }
   }
 
@@ -217,7 +260,11 @@ class Board extends React.Component {
   }
 
   isLetterLastInWord = (x, y) => {
-    return this.getIndexOfLetterInItsWord(x, y) === (this.state.acrossWords[this.getIndexOfWordThatLetterBelongsTo(x, y)].length - 1)
+    if (this.state.across){
+      return this.getIndexOfLetterInItsWord(x, y) === (this.state.acrossWords[this.getIndexOfWordThatLetterBelongsTo(x, y)].length - 1)
+    } else {
+      return this.getIndexOfLetterInItsWord(x, y) === (this.state.downWords[this.getIndexOfWordThatLetterBelongsTo(x, y)].length - 1)
+    }
   }
 
   isLetterFirstInWord = (x, y) => {
