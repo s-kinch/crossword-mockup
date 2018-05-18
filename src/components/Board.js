@@ -289,6 +289,12 @@ class Board extends React.Component {
 
     }
 
+    if (changeDirection){
+      this.setState({
+        across: !this.state.across
+      })
+    }
+
     return {x: newSelected.x, y: newSelected.y}
   }
 
