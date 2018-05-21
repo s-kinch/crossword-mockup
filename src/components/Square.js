@@ -16,11 +16,14 @@ class Square extends React.Component {
     if (this.props.value.black) {
       return "black"
     } else if (xCoord === this.props.selected.x && yCoord === this.props.selected.y) {
-      return "#af5d89"
+      // return "#af5d89"
+      return "#4F8987"
     } else if (selectedWord && this.props.across && xCoord === this.props.selected.x && selectedWord[0].y <= yCoord && selectedWord[selectedWord.length - 1].y >= yCoord) {
-      return "#d396b7"
+      // return "#d396b7"
+      return "#9ABAB9"
     } else if (selectedWord && !this.props.across && yCoord === this.props.selected.y && selectedWord[0].x <= xCoord && selectedWord[selectedWord.length - 1].x >= xCoord) {
-      return "#d396b7"
+      // return "#d396b7"
+      return "#9ABAB9"
     } else {
       return "white"
     }

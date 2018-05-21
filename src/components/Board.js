@@ -14,20 +14,118 @@ class Board extends React.Component {
       across: true,
       selected: {x: null, y: null},
       acrossWords: [],
-      downWords: []
+      downWords: [],
+      acrossClues: [],
+      downClues: []
     }
 
   }
 
+
+  // ---------------------Initialize, Update, Clear-----------------------------
+
   componentDidMount(){
     this.updateNumbers()
-    this.updateWords()
+    this.updateWords(this.initializeClues)
   }
 
-  setMode = (mode) => {
+  updateNumbers = (x, y, callback) => {
+    let squaresCopy = [...this.state.squares]
+    let index = 0
+    for (let i = 0; i < 15; i++){
+      for (let j = 0; j < 15; j++){
+        const currentSquare = squaresCopy[i][j]
+        if (!currentSquare.black && (i === 0 || j === 0 || squaresCopy[i][j-1].black || squaresCopy[i-1][j].black)){
+          index++
+          squaresCopy[i][j] = {...squaresCopy[i][j], number: index}
+        } else {
+          squaresCopy[i][j] = {...currentSquare, number: 0}
+        }
+      }
+    }
+
     this.setState({
-      mode: mode,
-      selected: {x: mode === 'text' ? 0 : null, y: mode === 'text' ? 0 : null}
+      squares: squaresCopy
+    }, callback)
+  }
+
+  updateWords = (callback) => {
+    const newAcrossWords = []
+    for (let i = 0; i < 15; i++){
+      let acrossWord = []
+      for (let j = 0; j < 15; j++){
+        if (!this.state.squares[i][j].black){
+          acrossWord.push(this.state.squares[i][j])
+          if (j === 14){
+            newAcrossWords.push(acrossWord)
+            acrossWord = []
+          }
+        } else {
+          if (acrossWord.length > 0){
+            newAcrossWords.push(acrossWord)
+            acrossWord = []
+          }
+        }
+      }
+    }
+
+    const newDownWords = []
+    for (let j = 0; j < 15; j++){
+      let downWord = []
+      for (let i = 0; i < 15; i++){
+        if (!this.state.squares[i][j].black){
+          downWord.push(this.state.squares[i][j])
+          if (i === 14){
+            newDownWords.push(downWord)
+            downWord = []
+          }
+        } else {
+          if (downWord.length > 0){
+            newDownWords.push(downWord)
+            downWord = []
+          }
+        }
+      }
+    }
+
+    this.setState({
+      acrossWords: newAcrossWords.sort((a,b) => {return a[0].number - b[0].number}),
+      downWords: newDownWords.sort((a,b) => {return a[0].number - b[0].number})
+    }, callback)
+  }
+
+  initializeClues = () => {
+    this.setState({
+      acrossClues: Array(this.state.acrossWords.length).fill(""),
+      downClues: Array(this.state.downWords.length).fill("")
+    })
+  }
+
+  updateClues = (acrossWordIndexToUpdate, prevDownWordIndex, downWordIndexToUpdate) => {
+    let acrossClues = this.state.acrossClues
+    let downClues = this.state.downClues
+
+    if (this.state.acrossWords.length > acrossClues.length){
+      console.log('add across clue at index', acrossWordIndexToUpdate + 1)
+      acrossClues.splice(acrossWordIndexToUpdate + 1, 0, "")
+    } else if (this.state.acrossWords.length < acrossClues.length){
+      console.log('remove across clue at index', acrossWordIndexToUpdate)
+      acrossClues.splice(acrossWordIndexToUpdate, 1)
+    }
+
+    if (this.state.downWords.length > downClues.length){
+      console.log('add down clue at index', downWordIndexToUpdate)
+      downClues.splice(downWordIndexToUpdate + 1, 0, "")
+    } else if (this.state.downWords.length < downClues.length){
+      console.log('remove down clue at index', prevDownWordIndex)
+      downClues.splice(downWordIndexToUpdate, 1)
+    } else {
+      console.log('move clue from index', prevDownWordIndex, 'to', downWordIndexToUpdate)
+    }
+
+    this.setState({
+      acrossClues: acrossClues,
+      downClues: downClues
     })
   }
 
@@ -50,31 +148,14 @@ class Board extends React.Component {
     this.setState({
       squares: this.clearBoardData(),
       selected: {x: null, y: null}
+    }, () => {
+      this.updateNumbers()
+      this.updateWords(this.initializeClues)
     })
   }
 
-  // put numbers back to default after clear
-  // maybe just do that in the initial djksdfjsklfjdlks
 
-  updateNumbers = (x, y) => {
-    let squaresCopy = [...this.state.squares]
-    let index = 0
-    for (let i = 0; i < 15; i++){
-      for (let j = 0; j < 15; j++){
-        const currentSquare = squaresCopy[i][j]
-        if (!currentSquare.black && (i === 0 || j === 0 || squaresCopy[i][j-1].black || squaresCopy[i-1][j].black)){
-          index++
-          squaresCopy[i][j] = {...squaresCopy[i][j], number: index}
-        } else {
-          squaresCopy[i][j] = {...currentSquare, number: 0}
-        }
-      }
-    }
-
-    this.setState({
-      squares: squaresCopy
-    })
-  }
+  // ---------------------------Togglin'----------------------------------------
 
   toggleSymmetry = () => {
     this.setState({
@@ -88,23 +169,12 @@ class Board extends React.Component {
     })
   }
 
-  selectSquare = (x, y) => {
-    if (this.state.selected.x === x && this.state.selected.y === y){
-      this.toggleDirection()
-    } else {
-      let newSelected = {x: x, y: y}
-      if (this.state.squares[x][y].black){
-        newSelected = {x: null, y: null}
-      }
-      this.setState({
-        selected: newSelected
-      })
-    }
-  }
-
   toggleBlack = (x, y) => {
     let squaresCopy = [...this.state.squares]
     const orig = squaresCopy[x][y].black
+    const indexOfPrevDown = this.getIndexOfDownWordThatLetterBelongsTo(x + 1, y)
+    const indexOfPrevAcross = this.getIndexOfAcrossWordThatLetterBelongsTo(x, y + 1)
+
     squaresCopy[x][y] = {...squaresCopy[x][y], black: !orig}
 
     if (this.state.radialSymmetry){
@@ -115,9 +185,30 @@ class Board extends React.Component {
     this.setState({
       squares: squaresCopy
     }, ()=> {
-      this.updateNumbers(x, y)
-      this.updateWords()
+      this.updateNumbers(x, y, () => this.updateWords(() => this.updateClues(indexOfPrevAcross, indexOfPrevDown, this.getIndexOfDownWordThatLetterBelongsTo(x+1, y))))
     })
+  }
+
+  setMode = (mode) => {
+    this.setState({
+      mode: mode,
+      selected: {x: mode === 'text' ? 0 : null, y: mode === 'text' ? 0 : null}
+    })
+  }
+
+
+  // -----------------------Text Mode------Refactor that big event listener-----
+
+  selectSquare = (x, y) => {
+    if (!this.state.squares[x][y].black){
+      if (this.state.selected.x === x && this.state.selected.y === y){
+        this.toggleDirection()
+      } else {
+        this.setState({
+          selected: {x: x, y: y}
+        })
+      }
+    }
   }
 
   addLetter = (e) => {
@@ -130,27 +221,6 @@ class Board extends React.Component {
       const selectedY = this.state.selected.y
       let newX = selectedX
       let newY = selectedY
-
-
-      // if (this.state.squares[selectedX][selectedY].value === ""){
-      //   newX = this.state.across ? selectedX : (selectedX === 0 ? 14 : selectedX - 1)
-      //   newY = this.state.across ? (selectedY === 0 ? 14 : selectedY - 1) : selectedY
-      // }
-      // squaresCopy[newX][newY] = {...squaresCopy[newX][newY], value: ""}
-      //
-      // this.setState({
-      //   squares: squaresCopy,
-      //   selected: {x: newX, y: newY}
-      // })
-
-       // make this skip over black // TODO:
-       // should stay in word if word still has letters right??????????
-       // nah ^ should go to end of prev word if you backspace from start of word
-
-       // if selected is first and empty, go to end of prev word (and delete ?)
-       // else - everything it's doing right now
-
-       // a broken thing: if you click on a black square then press an arrow in text mode
 
       if (this.state.squares[selectedX][selectedY].value === ""){
         if (this.isLetterFirstInWord(selectedX, selectedY)){
@@ -165,8 +235,6 @@ class Board extends React.Component {
             selected: {x: newX, y: newY}
           })
         }
-      } else {
-
       }
 
       squaresCopy[newX][newY] = {...squaresCopy[newX][newY], value: ""}
@@ -174,9 +242,6 @@ class Board extends React.Component {
         squares: squaresCopy,
         selected: {x: newX, y: newY}
       })
-
-
-
 
     } else if (e.shiftKey && key === 9){
       this.moveToPrevWord(this.getIndexOfWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y))
@@ -221,7 +286,6 @@ class Board extends React.Component {
       let squareToUpdate = squaresCopy[this.state.selected.x][this.state.selected.y]
       squaresCopy[this.state.selected.x][this.state.selected.y] = {...squareToUpdate, value: String.fromCharCode((96 <= key && key <= 105)? key-48 : key)}
 
-      console.log(this.isLetterLastInWord(this.state.selected.x, this.state.selected.y))
       if (this.isLetterLastInWord(this.state.selected.x, this.state.selected.y)){
         if (this.positionOfNextMissingLetterInWord(this.state.selected.x, this.state.selected.y)){
           this.setState({
@@ -243,13 +307,12 @@ class Board extends React.Component {
     }
   }
 
-  positionOfNextMissingLetterInWord = (x, y) => {
-    console.log('DIRECTION', this.state.across)
-    const word = this.getWordThatLetterBelongsTo(x, y)
-    console.log('WORD', word)
-    const selectedLetterIndex = this.getIndexOfLetterInItsWord(x, y)
-    console.log('SELECTEDLETTERINDEX', selectedLetterIndex)
 
+  // ------Utility word/letter methods that need refactored like craaaaaazy-----
+
+  positionOfNextMissingLetterInWord = (x, y) => {
+    const word = this.getWordThatLetterBelongsTo(x, y)
+    const selectedLetterIndex = this.getIndexOfLetterInItsWord(x, y)
     const lettersBefore = word.slice(0, selectedLetterIndex)
     const lettersAfter = word.slice(selectedLetterIndex + 1) // is it fine that this index might be too high? --> just empty array?
 
@@ -298,11 +361,19 @@ class Board extends React.Component {
     return {x: newSelected.x, y: newSelected.y}
   }
 
+  getIndexOfAcrossWordThatLetterBelongsTo = (x, y) => {
+    return this.state.acrossWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+  }
+
+  getIndexOfDownWordThatLetterBelongsTo = (x, y) => {
+    return this.state.downWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+  }
+
   getIndexOfWordThatLetterBelongsTo = (x, y) => {
     if (this.state.across){
-      return this.state.acrossWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+      return this.getIndexOfAcrossWordThatLetterBelongsTo(x, y)
     } else {
-      return this.state.downWords.findIndex(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+      return this.getIndexOfDownWordThatLetterBelongsTo(x, y)
     }
   }
 
@@ -401,73 +472,12 @@ class Board extends React.Component {
 
   }
 
-  updateWords = () => {
-    const newAcrossWords = []
-
-    for (let i = 0; i < 15; i++){
-
-    	let acrossWord = []
-
-    	for (let j = 0; j < 15; j++){
-    		if (!this.state.squares[i][j].black){
-
-    			acrossWord.push(this.state.squares[i][j])
-
-          if (j === 14){
-            newAcrossWords.push(acrossWord)
-            acrossWord = []
-          }
-
-      	} else {
-
-          if (acrossWord.length > 0){
-      			newAcrossWords.push(acrossWord)
-      			acrossWord = []
-          }
-        }
-      }
-    }
 
 
-    const newDownWords = []
-
-    for (let j = 0; j < 15; j++){
-
-    	let downWord = []
-
-    	for (let i = 0; i < 15; i++){
-    		if (!this.state.squares[i][j].black){
-
-          downWord.push(this.state.squares[i][j])
-
-          if (i === 14){
-            newDownWords.push(downWord)
-            downWord = []
-          }
-
-      	} else {
-
-          if (downWord.length > 0){
-      			newDownWords.push(downWord)
-      			downWord = []
-          }
-        }
-      }
-    }
-
-    this.setState({
-      acrossWords: newAcrossWords.sort((a,b) => {return a[0].number - b[0].number}), // sort
-      downWords: newDownWords.sort((a,b) => {return a[0].number - b[0].number}) // sort
-    })
-  }
-
-  // tab, shift + tab, space, backspace, enter, arrow keys
-  // tab ought to move to next word
-  // numbers!!!!
-  // later: extend so you can put any character and not just the keys. maybe like a hidden input field that's always focused?
-  // space bar to change toggleDirection
+  // ----------------------------Render-----------------------------------------
 
   render(){
+
     const grid = this.state.squares.map((row, i) => (
       <tr key={`${i}`}>
         {
@@ -488,7 +498,7 @@ class Board extends React.Component {
             </table>
           </div>
         </div>
-        <Nav setMode={this.setMode} toggleSymmetry={this.toggleSymmetry} clearBoard={this.clearBoard}/>
+        <Nav mode={this.state.mode} setMode={this.setMode} toggleSymmetry={this.toggleSymmetry} clearBoard={this.clearBoard} acrossClues={this.state.acrossClues} downClues={this.state.downClues }/>
       </div>
     )
   }

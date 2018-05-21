@@ -8,7 +8,7 @@ class Layout extends React.Component {
           <li><div id="toggle" /></li>
           <li><input type="checkbox" onChange={this.props.toggleSymmetry}/> symmetry</li>
           <li>a button to cycle through default layouts</li>
-          <li>stats maybe: b/w ratio, word length distribution</li>
+          <li>ratio</li>
         </ul>
       </div>
     )
