@@ -14,7 +14,17 @@ class Nav extends React.Component {
           <span id="save" className="navlink">Save</span>
         </div>
         <div>
-          {this.props.mode === 'layout' ? <Layout toggleSymmetry={this.props.toggleSymmetry}/> : <Clues acrossClues={this.props.acrossClues} downClues={this.props.downClues}/>}
+          {this.props.mode === 'layout' ?
+            <Layout toggleSymmetry={this.props.toggleSymmetry}/> :
+            <Clues
+              acrossNums={this.props.acrossNums}
+              downNums={this.props.downNums}
+              acrossClues={this.props.acrossClues}
+              downClues={this.props.downClues}
+              changeClue={this.props.changeClue}
+              selectClue={this.props.selectClue}
+            />
+          }
         </div>
       </div>
     )

@@ -29,7 +29,7 @@ class Board extends React.Component {
     this.updateWords(this.initializeClues)
   }
 
-  updateNumbers = (x, y, callback) => {
+  updateNumbers = (callback) => {
     let squaresCopy = [...this.state.squares]
     let index = 0
     for (let i = 0; i < 15; i++){
@@ -115,12 +115,17 @@ class Board extends React.Component {
 
     if (this.state.downWords.length > downClues.length){
       console.log('add down clue at index', downWordIndexToUpdate)
-      downClues.splice(downWordIndexToUpdate + 1, 0, "")
+      downClues.splice(downWordIndexToUpdate, 0, "")
     } else if (this.state.downWords.length < downClues.length){
       console.log('remove down clue at index', prevDownWordIndex)
-      downClues.splice(downWordIndexToUpdate, 1)
+      downClues.splice(prevDownWordIndex, 1)
     } else {
-      console.log('move clue from index', prevDownWordIndex, 'to', downWordIndexToUpdate)
+      if (prevDownWordIndex !== downWordIndexToUpdate){ // handles the -1's
+        console.log('move clue from index', prevDownWordIndex, 'to', downWordIndexToUpdate)
+        const clue = downClues.splice(prevDownWordIndex, 1)
+        console.log(clue)
+        downClues.splice(downWordIndexToUpdate, 0, clue[0])
+      }
     }
 
     this.setState({
@@ -172,20 +177,29 @@ class Board extends React.Component {
   toggleBlack = (x, y) => {
     let squaresCopy = [...this.state.squares]
     const orig = squaresCopy[x][y].black
-    const indexOfPrevDown = this.getIndexOfDownWordThatLetterBelongsTo(x + 1, y)
     const indexOfPrevAcross = this.getIndexOfAcrossWordThatLetterBelongsTo(x, y + 1)
+    const indexOfPrevDown = this.getIndexOfDownWordThatLetterBelongsTo(x + 1, y)
+    let indexOfPrevAcrossMirrored
+    let indexOfPrevDownMirrored
 
     squaresCopy[x][y] = {...squaresCopy[x][y], black: !orig}
 
     if (this.state.radialSymmetry){
       const mirroredSquareToToggle = {...squaresCopy[14 - x][14 - y]}
       squaresCopy[14 - x][14 - y] = {...mirroredSquareToToggle, black: !orig}
+      indexOfPrevAcrossMirrored = this.getIndexOfAcrossWordThatLetterBelongsTo(14 - x, 14 - y + 1)
+      indexOfPrevDownMirrored = this.getIndexOfDownWordThatLetterBelongsTo(14 - x + 1, 14 - y)
     }
 
     this.setState({
       squares: squaresCopy
     }, ()=> {
-      this.updateNumbers(x, y, () => this.updateWords(() => this.updateClues(indexOfPrevAcross, indexOfPrevDown, this.getIndexOfDownWordThatLetterBelongsTo(x+1, y))))
+      this.updateNumbers(() => this.updateWords(() => {
+        this.updateClues(indexOfPrevAcross, indexOfPrevDown, this.getIndexOfDownWordThatLetterBelongsTo(x+1, y))
+        if (this.state.radialSymmetry){
+          this.updateClues(indexOfPrevAcrossMirrored, indexOfPrevDownMirrored, this.getIndexOfDownWordThatLetterBelongsTo(14 - x + 1, 14 - y))
+        }
+      }))
     })
   }
 
@@ -208,6 +222,28 @@ class Board extends React.Component {
           selected: {x: x, y: y}
         })
       }
+    }
+  }
+
+  selectClue = () => {
+    // this.setState({
+    //
+    // })
+  }
+
+  changeClue = (across, index, text) => {
+    if (across){
+      let acrossClues = this.state.acrossClues
+      acrossClues[index] = text
+      this.setState({
+        acrossClues: acrossClues
+      })
+    } else {
+      let downClues = this.state.downClues
+      downClues[index] = text
+      this.setState({
+        downClues: downClues
+      })
     }
   }
 
@@ -488,9 +524,9 @@ class Board extends React.Component {
       </tr>
     ))
     return(
-      <div className="flex-container" tabIndex="0" onKeyDown={this.addLetter}>
+      <div className="flex-container" >
         <div className="tableboard">
-          <div className="table">
+          <div className="table" tabIndex="0" onKeyDown={this.addLetter}>
             <table>
               <tbody>
                 { grid }
@@ -498,7 +534,18 @@ class Board extends React.Component {
             </table>
           </div>
         </div>
-        <Nav mode={this.state.mode} setMode={this.setMode} toggleSymmetry={this.toggleSymmetry} clearBoard={this.clearBoard} acrossClues={this.state.acrossClues} downClues={this.state.downClues }/>
+        <Nav
+          mode={this.state.mode}
+          setMode={this.setMode}
+          toggleSymmetry={this.toggleSymmetry}
+          clearBoard={this.clearBoard}
+          acrossNums={this.state.acrossWords.map(x=>x[0].number)}
+          downNums={this.state.downWords.map(x=>x[0].number)}
+          acrossClues={this.state.acrossClues}
+          downClues={this.state.downClues}
+          changeClue={this.changeClue}
+          selectClue={this.selectClue}
+        />
       </div>
     )
   }
