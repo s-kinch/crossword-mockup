@@ -225,10 +225,18 @@ class Board extends React.Component {
     }
   }
 
-  selectClue = () => {
-    // this.setState({
-    //
-    // })
+  selectClue = (across, index) => {
+    if (across){
+      this.setState({
+        across: true,
+        selected: {x: this.state.acrossWords[index][0].x, y: this.state.acrossWords[index][0].y}
+      })
+    } else {
+      this.setState({
+        across: false,
+        selected: {x: this.state.downWords[index][0].x, y: this.state.downWords[index][0].y}        
+      })
+    }
   }
 
   changeClue = (across, index, text) => {

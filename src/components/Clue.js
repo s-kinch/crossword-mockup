@@ -12,13 +12,16 @@ class Clue extends React.Component {
     this.props.changeClue(this.props.across, this.props.index, e.target.value)
   }
 
-  render(){
-    // this.props.across
-    // this.props.index
-    return (
-      <li onClick={this.props.selectClue}>
-        {this.props.num}. <input type="text" onChange={this.handleChange} value={this.props.text}/>
+  handleSelectClue = () => {
+    this.props.selectClue(this.props.across, this.props.index)
+  }
 
+  render(){
+    return (
+      <li>
+        {this.props.num}. <input type="text"  onChange={this.handleChange}
+                                              onFocus={this.handleSelectClue}
+                                              value={this.props.text} />
       </li>
     )
   }
