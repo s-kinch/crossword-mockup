@@ -4,13 +4,13 @@ class Square extends React.Component {
 
   handleClick = () => {
     const coords = this.props.id.split(',')
-    this.props.handleClick(parseInt(coords[0]), parseInt(coords[1]))
+    this.props.handleClick(parseInt(coords[0], 10), parseInt(coords[1], 10))
   }
 
   getSquareColor = () => {
     const coords = this.props.id.split(',')
-    const xCoord = parseInt(coords[0])
-    const yCoord = parseInt(coords[1])
+    const xCoord = parseInt(coords[0], 10)
+    const yCoord = parseInt(coords[1], 10)
     const selectedWord = this.getSelectedWord()
 
     if (this.props.value.black) {

@@ -18,10 +18,12 @@ class Clue extends React.Component {
 
   render(){
     return (
-      <li>
-        {this.props.num}. <input type="text"  onChange={this.handleChange}
-                                              onFocus={this.handleSelectClue}
-                                              value={this.props.text} />
+      <li className='test' id={`${this.props.across ? 'across' : 'down'}-${this.props.index}`}>
+        <a className="ui black circular label">{this.props.num}</a>
+        <input type="text"  onChange={this.handleChange}
+                            onFocus={this.handleSelectClue}
+                            value={this.props.text}
+        />
       </li>
     )
   }

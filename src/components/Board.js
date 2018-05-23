@@ -1,6 +1,7 @@
 import React from 'react'
-import Nav from './Nav'
+import Modal from './Modal'
 import Square from './Square'
+const API = 'http://localhost:3000/api/v1/puzzles'
 
 class Board extends React.Component {
   constructor(){
@@ -106,24 +107,18 @@ class Board extends React.Component {
     let downClues = this.state.downClues
 
     if (this.state.acrossWords.length > acrossClues.length){
-      console.log('add across clue at index', acrossWordIndexToUpdate + 1)
       acrossClues.splice(acrossWordIndexToUpdate + 1, 0, "")
     } else if (this.state.acrossWords.length < acrossClues.length){
-      console.log('remove across clue at index', acrossWordIndexToUpdate)
       acrossClues.splice(acrossWordIndexToUpdate, 1)
     }
 
     if (this.state.downWords.length > downClues.length){
-      console.log('add down clue at index', downWordIndexToUpdate)
       downClues.splice(downWordIndexToUpdate, 0, "")
     } else if (this.state.downWords.length < downClues.length){
-      console.log('remove down clue at index', prevDownWordIndex)
       downClues.splice(prevDownWordIndex, 1)
     } else {
       if (prevDownWordIndex !== downWordIndexToUpdate){ // handles the -1's
-        console.log('move clue from index', prevDownWordIndex, 'to', downWordIndexToUpdate)
         const clue = downClues.splice(prevDownWordIndex, 1)
-        console.log(clue)
         downClues.splice(downWordIndexToUpdate, 0, clue[0])
       }
     }
@@ -168,10 +163,10 @@ class Board extends React.Component {
     })
   }
 
-  toggleDirection = () => {
+  toggleDirection = (callback) => {
     this.setState({
       across: !this.state.across
-    })
+    }, callback)
   }
 
   toggleBlack = (x, y) => {
@@ -214,13 +209,20 @@ class Board extends React.Component {
   // -----------------------Text Mode------Refactor that big event listener-----
 
   selectSquare = (x, y) => {
+    const callback = () => {
+      if (this.state.across){
+        document.getElementById('across-clues').scrollTo(document.getElementById(`across-${this.getIndexOfAcrossWordThatLetterBelongsTo(x, y)}`), 1000, {axis: y})
+      } else {
+        document.getElementById('down-clues').scrollTo(document.getElementById(`down-${this.getIndexOfDownWordThatLetterBelongsTo(x, y)}`), 1000, {axis: y})
+      }
+    }
     if (!this.state.squares[x][y].black){
       if (this.state.selected.x === x && this.state.selected.y === y){
-        this.toggleDirection()
+        this.toggleDirection(callback)
       } else {
         this.setState({
           selected: {x: x, y: y}
-        })
+        }, callback)
       }
     }
   }
@@ -234,7 +236,7 @@ class Board extends React.Component {
     } else {
       this.setState({
         across: false,
-        selected: {x: this.state.downWords[index][0].x, y: this.state.downWords[index][0].y}        
+        selected: {x: this.state.downWords[index][0].x, y: this.state.downWords[index][0].y}
       })
     }
   }
@@ -423,9 +425,33 @@ class Board extends React.Component {
 
   getWordThatLetterBelongsTo = (x, y) => {
     if (this.state.across){
-      return this.state.acrossWords.find(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+      return this.getAcrossWordThatLetterBelongsTo(x, y)
     } else {
-      return this.state.downWords.find(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+      return this.getDownWordThatLetterBelongsTo(x, y)
+    }
+  }
+
+  getAcrossWordThatLetterBelongsTo = (x, y) => {
+    return this.state.acrossWords.find(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+  }
+
+  getDownWordThatLetterBelongsTo = (x, y) => {
+    return this.state.downWords.find(word => word.filter(letter => letter.x === x && letter.y === y).length === 1)
+  }
+
+  getNumberOfAcrossWordThatLetterBelongsTo = (x, y) => {
+    if (this.state.squares[x][y].black){
+      return -1
+    } else {
+      return this.getAcrossWordThatLetterBelongsTo(x, y)[0].number
+    }
+  }
+
+  getNumberOfDownWordThatLetterBelongsTo = (x, y) => {
+    if (this.state.squares[x][y].black){
+      return -1
+    } else {
+      return this.getDownWordThatLetterBelongsTo(x, y)[0].number
     }
   }
 
@@ -481,7 +507,7 @@ class Board extends React.Component {
 
     this.setState({
       selected: newSelected
-    }, () => {changeDirection? this.toggleDirection() : null })
+    }, () => {if (changeDirection){this.toggleDirection()}})
 
   }
 
@@ -512,8 +538,32 @@ class Board extends React.Component {
 
     this.setState({
       selected: newSelected
-    }, () => {changeDirection? this.toggleDirection() : null })
+    }, () => {if (changeDirection){this.toggleDirection()}})
 
+  }
+
+  // ---------------------------Save--------------------------------------------
+
+  save = () => {
+    const acrossClues = this.state.acrossClues.map((x, index) => {return {text: x, across: true, word: this.state.acrossWords[index]}})
+    const downClues = this.state.downClues.map((x, index) => {return {text: x, across: false, word: this.state.downWords[index]}})
+    const letters = this.state.squares.map(row => row.map(letter =>
+      {return {...letter, across_clue_number: this.getNumberOfAcrossWordThatLetterBelongsTo(letter.x, letter.y), down_clue_number: this.getNumberOfDownWordThatLetterBelongsTo(letter.x, letter.y)}}
+    ))
+    // console.log(this.state.squares.map(letter => console.log(letter)))
+
+    fetch(API + `/create/${this.props.puzzle.slug}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        // title
+        across_clues: acrossClues,
+        down_clues: downClues,
+        letters: letters
+      })
+    }) // redirect if title (and therefore slug) changed
   }
 
 
@@ -534,6 +584,7 @@ class Board extends React.Component {
     return(
       <div className="flex-container" >
         <div className="tableboard">
+          {this.props.puzzle.title}
           <div className="table" tabIndex="0" onKeyDown={this.addLetter}>
             <table>
               <tbody>
@@ -542,7 +593,7 @@ class Board extends React.Component {
             </table>
           </div>
         </div>
-        <Nav
+        <Modal
           mode={this.state.mode}
           setMode={this.setMode}
           toggleSymmetry={this.toggleSymmetry}
@@ -553,6 +604,7 @@ class Board extends React.Component {
           downClues={this.state.downClues}
           changeClue={this.changeClue}
           selectClue={this.selectClue}
+          save={this.save}
         />
       </div>
     )

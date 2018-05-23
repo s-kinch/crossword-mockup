@@ -8,144 +8,25 @@
                                   supported by Chrome and Opera */
 }
 
-.App {
-  text-align: center;
-  background-color: #fff !important;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
-}
-
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: black;
-}
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.ui.card {
-  /* background-color: #fffbf4; */
-  background-color: #f2f2e8;
-
-  width: 50px !important;
-  height: 50px !important;
-  text-align: center;
-  font-family: 'Poppins', sans-serif;
-  font-size: 40px !important;
-  line-height: 40px !important;
-
-  box-shadow: inset 0.3em 0.3em 0.6em rgba(256,256,256,0.5), inset -0.075em -0.075em 0.075em rgba(0,0,0,0.3);
-
-  text-shadow: rgba(255,255,255,0.5) 0px 3px 3px;
-}
-
-.content {
-  text-align: center;
-  padding: 12.5% !important;
-}
-
-.ui.grid>.row>.column {
-  padding-top: 1rem;
-}
-
-.tile.container.header {
-  text-align: center;
-}
-
-.board {
-  width: 850px;
-  height: 850px;
-  margin: auto;
-  display: block;
-}
-
 .table {
-  display: flex;
-  flex-direction:row;
-}
-
-img {
-  margin: auto;
-  z-index: 1 !important;
-}
-
-.table {
-  /* position: relative;
-  top: 50px;
-  left: 50px;
-  right: 0%; */
   padding: 20px;
+  display: inline-block !important;
 }
 
-.container {
-  margin: auto;
+:focus {
+    outline-color: transparent;
+    outline-style: none;
 }
-
 
 td {
   width: 30px;
   height: 30px;
+  min-width: 30px;
+  min-width: 30px;
   border: 1px solid black;
   background: #fff;
   overflow: hidden;
   position: relative;
-}
-
-.loginscreen {
-  margin: auto;
-  text-align: center;
-  transform: translate(0%, 300%);
-}
-
-.centered {
-  margin: 25px auto 25px;
-  text-align: center;
-}
-
-.lobby-container {
-  width: 80%;
-  margin: auto;
-}
-
-.segment {
-  position: fixed !important;
-  width: 100%;
-  z-index: 3;
-}
-
-.centered.game {
-  margin: auto;
-  text-align: center;
-}
-
-.words {
-  position: fixed;
-  top: 100px;
-}
-
-.words h1 {
-  font-size: 100%;
-}
-
-.context {
-  position: absolute;
-  top: 75px;
-  width: 100%;
 }
 
 ul {
@@ -158,26 +39,24 @@ li {
 
 input[type=text] {
   background: none;
-  width: 100%;
-  line-height: 100%;
   border: none;
-  padding: 3%;
-  box-sizing: border-box;
-  text-align: center;
+  border-bottom: 3px solid #333;
+  padding: 5px;
   font-family: 'Source Code Pro', monospace;
-  font-size: 150%;
-  text-transform: uppercase;
+  width: 400px;
   font-weight: bold;
+  display: inline;
+  box-sizing: border-box;
 }
 
 input[type=text]:focus {
     /* background-color: lightblue; */
     outline: none;
+    border-bottom: 3px solid #4F8987;
 }
 
-#nav {
-  display: flex;
-  flex-direction:row;
+#modal {
+  margin: 20px;
 }
 
 .navlink {
@@ -186,7 +65,7 @@ input[type=text]:focus {
 
 .flex-container {
   display: flex;
-  margin: auto;
+  margin: 0 auto;
 }
 
 #toggle {
@@ -214,4 +93,25 @@ input[type=text]:focus {
   color: #000;
   z-index: 3;
   font-family: 'Source Code Pro', monospace;
+}
+
+.clues {
+  height: 400px;
+  overflow-y: scroll;
+  margin: 25px;
+  display: inline-block;
+}
+
+.clues-container {
+  margin: 25px;
+}
+
+a.ui.black.circular.label {
+  display: inline-block;
+  width: 25px;
+  margin-right: 20px !important;
+}
+
+a.ui.black.circular.label:hover {
+  cursor: default !important;
 }
