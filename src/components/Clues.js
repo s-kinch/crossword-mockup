@@ -19,20 +19,22 @@ class Clues extends React.Component {
 
     return(
       <div className="clues-container">
-        ~~~~ CLUES ~~~~
-        <br/><br/><br/>
-        ACROSS
-        <div className="clues" id="across-clues">
-          <ul>
-            {acrossClues}
-          </ul>
+        <div id="across-clues">
+          <h3>ACROSS</h3>
+          <div className="clues">
+            <ul>
+              {acrossClues}
+            </ul>
+          </div>
         </div>
 
-        DOWN
-        <div className="clues" id="down-clues">
-          <ul>
-            {downClues}
-          </ul>
+        <div id="down-clues">
+          <h3>DOWN</h3>
+          <div className="clues">
+            <ul>
+              {downClues}
+            </ul>
+          </div>
         </div>
       </div>
     )

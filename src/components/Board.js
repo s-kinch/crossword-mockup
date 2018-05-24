@@ -1,5 +1,6 @@
 import React from 'react'
-import Modal from './Modal'
+import CreateModal from './CreateModal'
+import PlayModal from './PlayModal'
 import Square from './Square'
 const API = 'http://localhost:3000/api/v1/puzzles'
 
@@ -9,7 +10,7 @@ class Board extends React.Component {
 
     this.state = {
       squares: this.clearBoardData(),
-      mode: 'layout',
+      mode: 'type',
       toggle: true,
       radialSymmetry: false,
       across: true,
@@ -26,8 +27,13 @@ class Board extends React.Component {
   // ---------------------Initialize, Update, Clear-----------------------------
 
   componentDidMount(){
-    this.updateNumbers()
-    this.updateWords(this.initializeClues)
+    if (this.props.puzzle.black_squares) {
+      this.props.puzzle.black_squares.map(coords => this.toggleBlack(coords.x, coords.y))
+    }
+    else {
+      this.updateNumbers()
+      this.updateWords(this.initializeClues)
+    }
   }
 
   updateNumbers = (callback) => {
@@ -144,9 +150,9 @@ class Board extends React.Component {
     return defaultSquares
   }
 
-  clearBoard = () => {
+  clearBoard = (layout) => {
     this.setState({
-      squares: this.clearBoardData(),
+      squares: layout || this.clearBoardData(),
       selected: {x: null, y: null}
     }, () => {
       this.updateNumbers()
@@ -584,7 +590,7 @@ class Board extends React.Component {
     return(
       <div className="flex-container" >
         <div className="tableboard">
-          {this.props.puzzle.title}
+          <h1>{this.props.puzzle.title}</h1>
           <div className="table" tabIndex="0" onKeyDown={this.addLetter}>
             <table>
               <tbody>
@@ -593,19 +599,31 @@ class Board extends React.Component {
             </table>
           </div>
         </div>
-        <Modal
-          mode={this.state.mode}
-          setMode={this.setMode}
-          toggleSymmetry={this.toggleSymmetry}
-          clearBoard={this.clearBoard}
-          acrossNums={this.state.acrossWords.map(x=>x[0].number)}
-          downNums={this.state.downWords.map(x=>x[0].number)}
-          acrossClues={this.state.acrossClues}
-          downClues={this.state.downClues}
-          changeClue={this.changeClue}
-          selectClue={this.selectClue}
-          save={this.save}
-        />
+
+        {!this.props.puzzle.clues ?
+          <CreateModal
+            mode={this.state.mode}
+            setMode={this.setMode}
+            toggleSymmetry={this.toggleSymmetry}
+            symmetry={this.state.radialSymmetry}
+            clearBoard={this.clearBoard}
+            clearBoardData={this.clearBoardData}
+            acrossNums={this.state.acrossWords.map(x=>x[0].number)}
+            downNums={this.state.downWords.map(x=>x[0].number)}
+            acrossClues={this.state.acrossClues}
+            downClues={this.state.downClues}
+            changeClue={this.changeClue}
+            selectClue={this.selectClue}
+            save={this.save}
+          />
+        :
+          <PlayModal
+            clues={this.props.puzzle.clues}
+            selectClue={this.selectClue}
+
+
+          />
+        }
       </div>
     )
   }

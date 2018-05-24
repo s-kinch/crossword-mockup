@@ -8,6 +8,16 @@
                                   supported by Chrome and Opera */
 }
 
+
+
+h1 {
+  font-family: 'Asar', serif;
+}
+
+h2 {
+  /* font-family: 'Asar', serif; */
+}
+
 .table {
   padding: 20px;
   display: inline-block !important;
@@ -31,20 +41,18 @@ td {
 
 ul {
   list-style-type: none;
+  padding-left: 10px;
 }
 
 li {
-  padding: 2%;
+  /* padding: 2%; */
 }
 
 input[type=text] {
   background: none;
   border: none;
-  border-bottom: 3px solid #333;
-  padding: 5px;
-  font-family: 'Source Code Pro', monospace;
-  width: 400px;
-  font-weight: bold;
+  border-bottom: 1px solid transparent;
+  font-family: 'Asar', serif;
   display: inline;
   box-sizing: border-box;
 }
@@ -52,7 +60,7 @@ input[type=text] {
 input[type=text]:focus {
     /* background-color: lightblue; */
     outline: none;
-    border-bottom: 3px solid #4F8987;
+    border-bottom: 1px solid #4F8987;
 }
 
 #modal {
@@ -64,8 +72,12 @@ input[type=text]:focus {
 }
 
 .flex-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   margin: 0 auto;
+  background-color: hotpink;
+  max-width: 1050px;
+  /* display: inline-block; */
 }
 
 #toggle {
@@ -100,18 +112,27 @@ input[type=text]:focus {
   overflow-y: scroll;
   margin: 25px;
   display: inline-block;
+  background-color: yellow;
+  padding-left: 0;
 }
 
 .clues-container {
-  margin: 25px;
+  /* margin: 25px; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: limegreen;
+  /* display: inline-block; */
 }
 
 a.ui.black.circular.label {
   display: inline-block;
-  width: 25px;
-  margin-right: 20px !important;
 }
 
 a.ui.black.circular.label:hover {
   cursor: default !important;
 }
+
+/* #bye {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+} */
