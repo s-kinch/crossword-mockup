@@ -9,7 +9,11 @@ class CreateModal extends React.Component {
       <div id="modal">
         <div>
           <span id="layout" className="navlink" onClick={() => this.props.setMode('layout')}><div id="toggle" />Layout</span>
-          <span id="text" className="navlink" onClick={() => this.props.setMode('text')}>Text</span>
+          <span id="text" className="navlink" onClick={() => {
+              this.props.setMode('text')
+              document.getElementById('table').focus()
+            }
+          }>Text</span>
           <span id="clear" className="navlink" onClick={this.props.clearBoard}>Clear</span>
           <span id="save" className="navlink" onClick={this.props.save}>Save</span>
         </div>

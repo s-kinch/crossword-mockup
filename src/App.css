@@ -12,14 +12,16 @@
 
 h1 {
   font-family: 'Asar', serif;
+  /* text-align: center; */
 }
 
-h2 {
+h3 {
   /* font-family: 'Asar', serif; */
+  text-align: center;
 }
 
 .table {
-  padding: 20px;
+  /* padding: 20px; */
   display: inline-block !important;
 }
 
@@ -64,7 +66,7 @@ input[type=text]:focus {
 }
 
 #modal {
-  margin: 20px;
+  /* margin: 20px; */
 }
 
 .navlink {
@@ -75,8 +77,9 @@ input[type=text]:focus {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 0 auto;
-  background-color: hotpink;
+  /* background-color: hotpink; */
   max-width: 1050px;
+  padding: 20px;
   /* display: inline-block; */
 }
 
@@ -110,9 +113,9 @@ input[type=text]:focus {
 .clues {
   height: 400px;
   overflow-y: scroll;
-  margin: 25px;
+  margin: 0 auto;
   display: inline-block;
-  background-color: yellow;
+  /* background-color: yellow; */
   padding-left: 0;
 }
 
@@ -120,7 +123,7 @@ input[type=text]:focus {
   /* margin: 25px; */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  background-color: limegreen;
+  /* background-color: limegreen; */
   /* display: inline-block; */
 }
 

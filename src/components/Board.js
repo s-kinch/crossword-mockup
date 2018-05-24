@@ -591,7 +591,7 @@ class Board extends React.Component {
       <div className="flex-container" >
         <div className="tableboard">
           <h1>{this.props.puzzle.title}</h1>
-          <div className="table" tabIndex="0" onKeyDown={this.addLetter}>
+          <div id="table" className="table" tabIndex="0" onKeyDown={this.addLetter}>
             <table>
               <tbody>
                 { grid }
