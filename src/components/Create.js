@@ -20,6 +20,7 @@ class Create extends React.Component {
 
   render(){
     return(
+
       <div>
       { this.state.puzzle ? (<Board puzzle={this.state.puzzle}/>) : null }
       </div>

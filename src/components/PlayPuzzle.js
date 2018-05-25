@@ -11,14 +11,12 @@ class PlayPuzzle extends React.Component {
   }
 
   componentDidMount(){
-    console.log(this.props.match.params.slug)
     fetch(API + this.props.match.params.slug).then(res => res.json()).then(json => this.setState({
       puzzle: json
     }))
   }
 
   render(){
-    console.log(this.props)
     return(
       <div id="bye">
         {this.state.puzzle ? <Board puzzle={this.state.puzzle}/> : null}

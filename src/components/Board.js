@@ -136,7 +136,7 @@ class Board extends React.Component {
   }
 
   clearBoardData = () => {
-    const defaultSquare = {value: "", black: false, number: 0, selected: false, semiSelected: false}
+    const defaultSquare = {value: "", black: false, number: 0, correct: null}
     const defaultSquares = []
     for (let i = 0; i < 15; i++){
       const row = []
@@ -556,7 +556,6 @@ class Board extends React.Component {
     const letters = this.state.squares.map(row => row.map(letter =>
       {return {...letter, across_clue_number: this.getNumberOfAcrossWordThatLetterBelongsTo(letter.x, letter.y), down_clue_number: this.getNumberOfDownWordThatLetterBelongsTo(letter.x, letter.y)}}
     ))
-    // console.log(this.state.squares.map(letter => console.log(letter)))
 
     fetch(API + `/create/${this.props.puzzle.slug}`, {
       method: 'POST',
@@ -572,12 +571,66 @@ class Board extends React.Component {
     }) // redirect if title (and therefore slug) changed
   }
 
+  //  ---------------------------Checking---------------------------------------
+
+  checkSquareFetch = (x, y) => {
+    return fetch(API + `/play/${this.props.puzzle.slug}/check`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        square: this.state.squares[x][y]
+      })
+    }).then(res => res.json())
+  }
+
+  checkSquare = (x, y) => {
+    let xToCheck = x
+    let yToCheck = y
+    if ((x && y) || (this.state.selected.x !== null && this.state.selected.y !== null)){
+      if (!(x && y)){
+        xToCheck = this.state.selected.x
+        yToCheck = this.state.selected.y
+      }
+
+      this.checkSquareFetch(xToCheck, yToCheck).then(json => {
+        const letter = json
+        let squaresCopy = [...this.state.squares]
+        squaresCopy[xToCheck][yToCheck] = {...squaresCopy[xToCheck][yToCheck], correct: letter.value === squaresCopy[xToCheck][yToCheck].value}
+
+        this.setState({
+          squares: squaresCopy
+        })
+      })
+    }
+  }
+
+  revealSquare = (x, y) => {
+    let xToCheck = x
+    let yToCheck = y
+    if ((x && y) || (this.state.selected.x !== null && this.state.selected.y !== null)){
+      if (!(x && y)){
+        xToCheck = this.state.selected.x
+        yToCheck = this.state.selected.y
+      }
+
+      this.checkSquareFetch(xToCheck, yToCheck).then(json => {
+        const letter = json
+        let squaresCopy = [...this.state.squares]
+        squaresCopy[xToCheck][yToCheck] = {...squaresCopy[xToCheck][yToCheck], value: letter.value, correct: true}
+
+        this.setState({
+          squares: squaresCopy
+        })
+      })
+    }
+  }
 
 
   // ----------------------------Render-----------------------------------------
 
   render(){
-
     const grid = this.state.squares.map((row, i) => (
       <tr key={`${i}`}>
         {
@@ -620,8 +673,8 @@ class Board extends React.Component {
           <PlayModal
             clues={this.props.puzzle.clues}
             selectClue={this.selectClue}
-
-
+            checkSquare={this.checkSquare}
+            revealSquare={this.revealSquare}
           />
         }
       </div>

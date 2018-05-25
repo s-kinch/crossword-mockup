@@ -29,6 +29,16 @@ class Square extends React.Component {
     }
   }
 
+  getLetterColor = () => {
+    if (!!this.props.value.correct){
+      return "hotpink"
+    } else if (this.props.value.correct === false){
+      return "orange"
+    } else {
+      return "black"
+    }
+  }
+
   getSelectedWord = () => {
     if (this.props.across){
       return this.props.acrossWords.find(word => word.filter(letter => letter.x === this.props.selected.x && letter.y === this.props.selected.y).length === 1)
@@ -38,12 +48,11 @@ class Square extends React.Component {
   }
 
   render(){
-
     return(
       <td onClick={this.handleClick} onDragEnter={this.handleClick} style={{backgroundColor: this.getSquareColor()}} >
       <div>
         {this.props.value.number === 0 ? null : <div className="number">{this.props.value.number}</div>}
-        <div className="letter">{this.props.value.value}</div>
+        <div className="letter" style={{color: this.getLetterColor()}}>{this.props.value.value}</div>
       </div>
       </td>
     )
