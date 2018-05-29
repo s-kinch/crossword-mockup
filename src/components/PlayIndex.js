@@ -8,7 +8,8 @@ class PlayIndex extends React.Component {
   constructor(){
     super()
     this.state = {
-      puzzles: []
+      puzzles: [],
+      searchText: ""
     }
   }
 
@@ -20,10 +21,17 @@ class PlayIndex extends React.Component {
     })
   }
 
+  handleChange = (e) =>{
+    this.setState({
+      searchText: e.target.value
+    })
+  }
+
   render(){
-    const puzzleTitles = this.state.puzzles.map(x => <li key={x.id}><NavLink to={`/play/${x.slug}`}>{x.title}</NavLink></li>) // navlink
+    const puzzleTitles = this.state.puzzles.filter(x => x.title.toLowerCase().includes(this.state.searchText.toLowerCase())).map(x => <li key={x.id}><NavLink to={`/play/${x.slug}`}>{x.title}</NavLink></li>) // navlink
     return(
       <div>
+        <h1><input type="text" onChange={this.handleChange} placeholder="search puzzle titles" /></h1>
         <ul>
         {puzzleTitles}
         </ul>
