@@ -5,8 +5,8 @@ import Square from './Square'
 const API = 'http://localhost:3000/api/v1/puzzles'
 
 class Board extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
 
     this.state = {
       squares: this.clearBoardData(),
@@ -18,7 +18,8 @@ class Board extends React.Component {
       acrossWords: [],
       downWords: [],
       acrossClues: [],
-      downClues: []
+      downClues: [],
+      title: props.puzzle.title
     }
 
   }
@@ -563,12 +564,18 @@ class Board extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        // title
+        title: this.state.title,
         across_clues: acrossClues,
         down_clues: downClues,
         letters: letters
       })
-    }) // redirect if title (and therefore slug) changed
+    })
+  }
+
+  handleTitleChange = (e) => {
+    this.setState({
+      title: e.target.value
+    })
   }
 
   //  ---------------------------Checking---------------------------------------
@@ -640,10 +647,18 @@ class Board extends React.Component {
         }
       </tr>
     ))
+
+    console.log(this.state.title)
+
     return(
       <div className="flex-container" >
         <div className="tableboard">
-          <h1>{this.props.puzzle.title}</h1>
+
+          {!this.props.puzzle.clues ?
+            <h1><input type="text" id="title-input" onChange={this.handleTitleChange} value={this.state.title}/></h1>
+          : <h1>{this.props.puzzle.title}</h1>
+          }
+
           <div id="table" className="table" tabIndex="0" onKeyDown={this.addLetter}>
             <table>
               <tbody>

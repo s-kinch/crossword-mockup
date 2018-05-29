@@ -17,13 +17,20 @@ class Square extends React.Component {
       return "black"
     } else if (xCoord === this.props.selected.x && yCoord === this.props.selected.y) {
       // return "#af5d89"
-      return "#4F8987"
+      // return "#9ABAB9"
+      // return "#B6C966"
+      return "#BFD78D"
     } else if (selectedWord && this.props.across && xCoord === this.props.selected.x && selectedWord[0].y <= yCoord && selectedWord[selectedWord.length - 1].y >= yCoord) {
       // return "#d396b7"
-      return "#9ABAB9"
+      // return "#4F8987"
+
+      // return "#DDED9A"
+      return "#ebf7d2"
     } else if (selectedWord && !this.props.across && yCoord === this.props.selected.y && selectedWord[0].x <= xCoord && selectedWord[selectedWord.length - 1].x >= xCoord) {
       // return "#d396b7"
-      return "#9ABAB9"
+      // return "#DDED9A"
+
+      return "#ebf7d2"
     } else {
       return "white"
     }
@@ -31,9 +38,11 @@ class Square extends React.Component {
 
   getLetterColor = () => {
     if (!!this.props.value.correct){
-      return "hotpink"
+      // return "#1c5982"
+      // return "#4F7255"
+      return "#4f7131"
     } else if (this.props.value.correct === false){
-      return "orange"
+      return "#D9420C"
     } else {
       return "black"
     }
