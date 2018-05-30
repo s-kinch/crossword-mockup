@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button, Popup, Checkbox, Label, List, Segment } from 'semantic-ui-react'
 
 class Layout extends React.Component{
   constructor(){
@@ -24,12 +25,27 @@ class Layout extends React.Component{
   render(){
     return (
       <div>
-        <ul>
-          <li><input type="checkbox" onChange={this.props.toggleSymmetry} checked={!!this.props.symmetry}/> symmetry</li>
-          <li onClick={this.changeLayout}>Default Layout</li>
-          <li>{this.props.blackWhiteRatio}% black</li>
-          <li>{100 - this.props.blackWhiteRatio}% white</li>
-        </ul>
+      <Segment inverted>
+        Click a square on the grid to change its color.
+      </Segment>
+      <List divided >
+        <List.Item>
+          Symmetry   <Checkbox slider onChange={this.props.toggleSymmetry} checked={!!this.props.symmetry}/>
+        </List.Item>
+        <List.Item>
+          Default Layouts
+          <Popup
+            trigger={<Label id="apply-layout" color='black' horizontal onClick={this.changeLayout}>Apply New</Label>}
+            content='Careful! This will erase text currently on the grid.'
+          />
+        </List.Item>
+        <List.Item>
+          Stats<br/>
+          <Label color='black' horizontal>Black</Label> {this.props.blackWhiteRatio} % <br/>
+          <Label horizontal>White</Label> {100 - this.props.blackWhiteRatio} % <br/>
+        </List.Item>
+      </List>
+
       </div>
     )
   }

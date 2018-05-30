@@ -6,10 +6,7 @@ class Splash extends React.Component {
   render(){
     return(
       <div>
-        <h1>CrossCompose</h1>
-        <NavLink to="/create">Create</NavLink>
-        <br/>
-        <NavLink to="/play">Play</NavLink>
+        <h1 id="title">CrossCompose</h1>
       </div>
     )
   }

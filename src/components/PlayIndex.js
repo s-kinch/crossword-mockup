@@ -31,7 +31,7 @@ class PlayIndex extends React.Component {
     const puzzleTitles = this.state.puzzles.filter(x => x.title.toLowerCase().includes(this.state.searchText.toLowerCase())).map(x => <li key={x.id}><NavLink to={`/play/${x.slug}`}>{x.title}</NavLink></li>) // navlink
     return(
       <div>
-        <h1><input type="text" onChange={this.handleChange} placeholder="search puzzle titles" /></h1>
+        <h1><input id="search" type="text" onChange={this.handleChange} placeholder="search puzzle titles" /></h1>
         <ul>
         {puzzleTitles}
         </ul>

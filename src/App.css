@@ -6,9 +6,12 @@
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
+  text-align: center;
 }
 
-
+#search {
+  text-align: center;
+}
 
 h1 {
   font-family: 'Asar', serif;
@@ -60,9 +63,8 @@ input[type=text] {
 }
 
 input[type=text]:focus {
-    /* background-color: lightblue; */
-    outline: none;
-    border-bottom: 1px solid #4F8987;
+  outline: none;
+  border-bottom: 1px solid #BFD78D;
 }
 
 textarea {
@@ -71,32 +73,24 @@ textarea {
   border-bottom: 1px solid transparent;
   resize: none;
   overflow-y: auto;
+  position: relative;
+  bottom: -9px;
 }
 
 textarea:focus {
-  background-color: lightblue;
+  border-bottom: 1px solid #BFD78D;
 }
 
 #title-input {
   width: 450px;
 }
 
-#modal {
-  /* margin: 20px; */
-}
-
-.navlink {
-  padding: 20px;
-}
-
 .flex-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   margin: 0 auto;
-  /* background-color: hotpink; */
   max-width: 1050px;
   padding: 20px;
-  /* display: inline-block; */
 }
 
 #toggle {
@@ -121,7 +115,6 @@ textarea:focus {
   position: absolute;
   left: 30%;
   top: 40%;
-  /* color: #000; */
   z-index: 3;
   font-family: 'Source Code Pro', monospace;
 }
@@ -131,16 +124,20 @@ textarea:focus {
   overflow-y: scroll;
   margin: 0 auto;
   display: inline-block;
-  /* background-color: yellow; */
   padding-left: 0;
 }
 
 .clues-container {
-  /* margin: 25px; */
   display: grid;
   grid-template-columns: 1fr 1fr;
-  /* background-color: limegreen; */
-  /* display: inline-block; */
+}
+
+a {
+  color: #000;
+}
+
+a:hover {
+  color: #BFD78D;
 }
 
 a.ui.black.circular.label {
@@ -154,6 +151,48 @@ a.ui.black.circular.label:hover {
 .clue {
   width: 200px;
 }
+
+#navbar {
+  border-radius: 0px;
+}
+
+#create, #cheese {
+  margin-bottom: 25px;
+}
+
+.ui.button {
+  outline: none;
+}
+
+button {
+  outline: none;
+}
+
+.ui.button:active{
+  outline: none;
+}
+
+#apply-layout {
+  margin-left: 10px;
+}
+
+.ui.black.horizontal.label, .ui.horizontal.label {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+#title {
+  font-size: 800%;
+  padding-top: 10%;
+}
+
+.item {
+  text-align: left !important;
+}
+
+/* button.ui.button:focus {
+  outline: 0 !important;
+} */
 
 /* #bye {
   display: grid;

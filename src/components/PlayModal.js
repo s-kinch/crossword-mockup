@@ -1,5 +1,6 @@
 import React from 'react'
 import Clues from './Clues'
+import { Button } from 'semantic-ui-react'
 
 class PlayModal extends React.Component {
 
@@ -7,8 +8,8 @@ class PlayModal extends React.Component {
     return(
       <div id="modal">
         <div id="cheese">
-          <span onClick={()=>this.props.checkSquare()}>Check Square</span>
-          <span onClick={()=>this.props.revealSquare()}>Reveal Square</span>
+          <Button onClick={()=>this.props.checkSquare()}>Check Square</Button>
+          <Button onClick={()=>this.props.revealSquare()}>Reveal Square</Button>
 
         </div>
         <div id="hello">
