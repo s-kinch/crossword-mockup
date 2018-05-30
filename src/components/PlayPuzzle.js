@@ -19,7 +19,7 @@ class PlayPuzzle extends React.Component {
   render(){
     return(
       <div id="bye">
-        {this.state.puzzle ? <Board puzzle={this.state.puzzle}/> : null}
+        {this.state.puzzle ? <Board puzzle={this.state.puzzle} play={true}/> : null}
       </div>
     )
   }

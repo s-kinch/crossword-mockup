@@ -65,6 +65,22 @@ input[type=text]:focus {
     border-bottom: 1px solid #4F8987;
 }
 
+textarea {
+  background: none;
+  border: none;
+  border-bottom: 1px solid transparent;
+  resize: none;
+  overflow-y: auto;
+}
+
+textarea:focus {
+  background-color: lightblue;
+}
+
+#title-input {
+  width: 450px;
+}
+
 #modal {
   /* margin: 20px; */
 }
@@ -133,6 +149,10 @@ a.ui.black.circular.label {
 
 a.ui.black.circular.label:hover {
   cursor: default !important;
+}
+
+.clue {
+  width: 200px;
 }
 
 /* #bye {

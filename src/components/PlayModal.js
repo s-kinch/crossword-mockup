@@ -19,6 +19,7 @@ class PlayModal extends React.Component {
               downClues={this.props.clues.filter(x => !x.across).map(x => x.text)}
               changeClue={() => {}}
               selectClue={this.props.selectClue}
+              play={this.props.play}
             />
         </div>
       </div>

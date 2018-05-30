@@ -14,12 +14,18 @@ class CreateModal extends React.Component {
               document.getElementById('table').focus()
             }
           }>Text</span>
-          <span id="clear" className="navlink" onClick={this.props.clearBoard}>Clear</span>
+          <span id="clear" className="navlink" onClick={() => this.props.clearBoard()}>Clear</span>
           <span id="save" className="navlink" onClick={this.props.save}>Save</span>
         </div>
         <div>
           {this.props.mode === 'layout' ?
-            <Layout toggleSymmetry={this.props.toggleSymmetry} symmetry={this.props.symmetry} clearBoard={this.props.clearBoard} clearBoardData={this.props.clearBoardData}/> :
+            <Layout
+              toggleSymmetry={this.props.toggleSymmetry}
+              symmetry={this.props.symmetry}
+              clearBoard={this.props.clearBoard}
+              clearBoardData={this.props.clearBoardData}
+              blackWhiteRatio={this.props.blackWhiteRatio}
+            /> :
             <Clues
               acrossNums={this.props.acrossNums}
               downNums={this.props.downNums}
@@ -27,6 +33,7 @@ class CreateModal extends React.Component {
               downClues={this.props.downClues}
               changeClue={this.props.changeClue}
               selectClue={this.props.selectClue}
+              play={this.props.play}
             />
           }
         </div>

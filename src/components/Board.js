@@ -2,6 +2,7 @@ import React from 'react'
 import CreateModal from './CreateModal'
 import PlayModal from './PlayModal'
 import Square from './Square'
+import { Redirect } from 'react-router'
 const API = 'http://localhost:3000/api/v1/puzzles'
 
 class Board extends React.Component {
@@ -19,7 +20,9 @@ class Board extends React.Component {
       downWords: [],
       acrossClues: [],
       downClues: [],
-      title: props.puzzle.title
+      title: props.puzzle.title,
+      redirect: false,
+      numBlackSquares: 0
     }
 
   }
@@ -153,7 +156,7 @@ class Board extends React.Component {
 
   clearBoard = (layout) => {
     this.setState({
-      squares: layout || this.clearBoardData(),
+      squares: layout ? layout : this.clearBoardData(), // ???????????????????????????????????????????
       selected: {x: null, y: null}
     }, () => {
       this.updateNumbers()
@@ -183,18 +186,23 @@ class Board extends React.Component {
     const indexOfPrevDown = this.getIndexOfDownWordThatLetterBelongsTo(x + 1, y)
     let indexOfPrevAcrossMirrored
     let indexOfPrevDownMirrored
+    let blackSquareDelta = orig ? -1 : 1
 
     squaresCopy[x][y] = {...squaresCopy[x][y], black: !orig}
 
     if (this.state.radialSymmetry){
       const mirroredSquareToToggle = {...squaresCopy[14 - x][14 - y]}
+      if (mirroredSquareToToggle.black === orig){
+        orig ? blackSquareDelta-- : blackSquareDelta++
+      }
       squaresCopy[14 - x][14 - y] = {...mirroredSquareToToggle, black: !orig}
       indexOfPrevAcrossMirrored = this.getIndexOfAcrossWordThatLetterBelongsTo(14 - x, 14 - y + 1)
       indexOfPrevDownMirrored = this.getIndexOfDownWordThatLetterBelongsTo(14 - x + 1, 14 - y)
     }
 
     this.setState({
-      squares: squaresCopy
+      squares: squaresCopy,
+      numBlackSquares: this.state.numBlackSquares + blackSquareDelta
     }, ()=> {
       this.updateNumbers(() => this.updateWords(() => {
         this.updateClues(indexOfPrevAcross, indexOfPrevDown, this.getIndexOfDownWordThatLetterBelongsTo(x+1, y))
@@ -569,7 +577,9 @@ class Board extends React.Component {
         down_clues: downClues,
         letters: letters
       })
-    })
+    }).then(res => res.json()).then(json => this.setState({
+      redirect: `/play/${json.slug}`
+    }))
   }
 
   handleTitleChange = (e) => {
@@ -638,6 +648,8 @@ class Board extends React.Component {
   // ----------------------------Render-----------------------------------------
 
   render(){
+    console.log(this.state.squares)
+
     const grid = this.state.squares.map((row, i) => (
       <tr key={`${i}`}>
         {
@@ -648,14 +660,17 @@ class Board extends React.Component {
       </tr>
     ))
 
-    console.log(this.state.title)
+    if (!!this.state.redirect){
+      return (<Redirect push to={this.state.redirect} />)
+    }
+
 
     return(
       <div className="flex-container" >
         <div className="tableboard">
 
           {!this.props.puzzle.clues ?
-            <h1><input type="text" id="title-input" onChange={this.handleTitleChange} value={this.state.title}/></h1>
+            <h1><textarea id="title-input" onChange={this.handleTitleChange} value={this.state.title} rows="1"/> </h1>
           : <h1>{this.props.puzzle.title}</h1>
           }
 
@@ -683,6 +698,8 @@ class Board extends React.Component {
             changeClue={this.changeClue}
             selectClue={this.selectClue}
             save={this.save}
+            play={this.props.play}
+            blackWhiteRatio={parseFloat(Math.round(((this.state.numBlackSquares / 225) * 100 + 0.00001) * 100) / 100).toFixed(2)}
           />
         :
           <PlayModal
@@ -690,6 +707,7 @@ class Board extends React.Component {
             selectClue={this.selectClue}
             checkSquare={this.checkSquare}
             revealSquare={this.revealSquare}
+            play={this.props.play}
           />
         }
       </div>

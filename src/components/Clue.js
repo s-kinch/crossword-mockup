@@ -1,8 +1,8 @@
 import React from 'react'
 
 class Clue extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state = {
       // text: this.props.text
     }
@@ -20,10 +20,17 @@ class Clue extends React.Component {
     return (
       <li className='test' id={`${this.props.across ? 'across' : 'down'}-${this.props.index}`}>
         <a className="ui black circular label">{this.props.num}</a>
-        <input type="text"  onChange={this.handleChange}
-                            onFocus={this.handleSelectClue}
-                            value={this.props.text}
-        />
+        {!!this.props.play ?
+          <div onClick={this.handleSelectClue}>
+            {this.props.text}
+          </div>
+          :
+          <textarea className="clue" rows="1"
+                              onChange={this.handleChange}
+                              onFocus={this.handleSelectClue}
+                              value={this.props.text}
+          />
+        }
       </li>
     )
   }

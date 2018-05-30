@@ -27,7 +27,8 @@ class Layout extends React.Component{
         <ul>
           <li><input type="checkbox" onChange={this.props.toggleSymmetry} checked={!!this.props.symmetry}/> symmetry</li>
           <li onClick={this.changeLayout}>Default Layout</li>
-          <li>ratio</li>
+          <li>{this.props.blackWhiteRatio}% black</li>
+          <li>{100 - this.props.blackWhiteRatio}% white</li>
         </ul>
       </div>
     )
@@ -53,7 +54,7 @@ const layouts = [
     {x: 3, y: 6}, {x: 8, y: 6}, {x: 4, y: 7}, {x: 10, y: 7}, {x: 6, y: 8}, {x: 11, y: 8}, {x: 7, y: 9},
     {x: 0, y: 10}, {x: 1, y: 10}, {x: 2, y: 10}, {x: 7, y: 10}, {x: 13, y: 10}, {x: 14, y: 10}, {x: 9, y: 11},
     {x: 4, y: 12}, {x: 10, y: 12}, {x: 4, y: 13}, {x: 10, y: 13}, {x: 4, y: 14}, {x: 10, y: 14}],
-  
+
   [{x: 4, y: 0}, {x: 8, y: 0}, {x: 9, y: 0}, {x: 4, y: 1}, {x: 9, y: 1}, {x: 4, y: 2}, {x: 9, y: 2},
     {x: 4, y: 3}, {x: 12, y: 3}, {x: 13, y: 3}, {x: 14, y: 3}, {x: 7, y: 4}, {x: 11, y: 4}, {x: 0, y: 5},
     {x: 1, y: 5}, {x: 6, y: 5}, {x: 3, y: 6}, {x: 9, y: 6}, {x: 4, y: 7}, {x: 10, y: 7}, {x: 5, y: 8},
