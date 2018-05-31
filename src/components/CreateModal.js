@@ -10,16 +10,7 @@ class CreateModal extends React.Component {
     const textColor = this.props.mode === 'text' ? "#BFD78D" : null
     return(
       <div id="modal">
-        <div id="create"> {/*<span id="layout" className="navlink" onClick={() => this.props.setMode('layout')}><div id="toggle" />Layout</span>
-          <span id="text" className="navlink" onClick={() => {
-              this.props.setMode('text')
-              document.getElementById('table').focus()
-            }
-          }>Text</span>
-          <span id="clear" className="navlink" onClick={() => this.props.clearBoard()}>Clear</span>*/}
-          {/*<span id="save" className="navlink" onClick={this.props.save}>Save</span>*/}
-
-
+        <div id="create">
           <Button style={{backgroundColor: layoutColor}} onClick={() => this.props.setMode('layout')}>Layout</Button>
           <Button style={{backgroundColor: textColor}} onClick={() => {
               this.props.setMode('text')

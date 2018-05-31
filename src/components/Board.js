@@ -648,8 +648,6 @@ class Board extends React.Component {
   // ----------------------------Render-----------------------------------------
 
   render(){
-    console.log(this.state.squares)
-
     const grid = this.state.squares.map((row, i) => (
       <tr key={`${i}`}>
         {
@@ -699,7 +697,7 @@ class Board extends React.Component {
             selectClue={this.selectClue}
             save={this.save}
             play={this.props.play}
-            blackWhiteRatio={parseFloat(Math.round(((this.state.numBlackSquares / 225) * 100 + 0.00001) * 100) / 100).toFixed(2)}
+            blackWhiteRatio={((this.state.numBlackSquares / 225) * 100).toFixed(2)}
           />
         :
           <PlayModal

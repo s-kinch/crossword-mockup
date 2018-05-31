@@ -4,12 +4,17 @@ import { Menu, Segment } from 'semantic-ui-react'
 
 
 export default class Navbar extends React.Component {
-  state = { activeItem: 'home' }
-
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   render() {
-    const { activeItem } = this.state
+    let activeItem = 'home'
+    console.log(this.props)
+    if (this.props.location.pathname.includes('/play')){
+      activeItem = 'play'
+    } else if (this.props.location.pathname.includes('/create')){
+      activeItem = 'create'
+    } else {
+      activeItem = 'home'
+    }
 
     return (
       <Segment inverted id="navbar">

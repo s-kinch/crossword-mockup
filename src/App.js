@@ -6,13 +6,14 @@ import Create from './components/Create'
 import PlayIndex from './components/PlayIndex'
 import PlayPuzzle from './components/PlayPuzzle'
 import Navbar from './components/Navbar'
-
+import {withRouter} from 'react-router'
 
 class App extends Component {
   render() {
+    console.log('app', this.props)
     return (
       <div className="noselect">
-        <Navbar /> {/* only if not on splash page howwwww */}
+        <Navbar location={this.props.location}/>
         <Route path="/create" component={Create} />
         <Route path="/play/:slug" component={PlayPuzzle} />
         <Route path="/play" exact component={PlayIndex} />
@@ -22,4 +23,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withRouter(App);

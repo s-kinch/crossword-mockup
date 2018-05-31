@@ -21,7 +21,7 @@ class Clue extends React.Component {
       <li className='test' id={`${this.props.across ? 'across' : 'down'}-${this.props.index}`}>
         <a className="ui black circular label">{this.props.num}</a>
         {!!this.props.play ?
-          <div onClick={this.handleSelectClue}>
+          <div className="clue-div" onClick={this.handleSelectClue}>
             {this.props.text}
           </div>
           :

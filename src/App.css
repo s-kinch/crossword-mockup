@@ -190,6 +190,16 @@ button {
   text-align: left !important;
 }
 
+.clue-div {
+  display: inline-block;
+  margin-left: 10px;
+  width: 200px;
+}
+
+.clues {
+  text-align: left !important;
+}
+
 /* button.ui.button:focus {
   outline: 0 !important;
 } */
