@@ -40,6 +40,11 @@ class CreateModal extends React.Component {
               changeClue={this.props.changeClue}
               selectClue={this.props.selectClue}
               play={this.props.play}
+              suggest={this.props.suggest}
+              toggleSuggest={this.props.toggleSuggest}
+              suggestions={this.props.suggestions}
+              showSuggestions={this.props.showSuggestions}
+              implementSuggestion={this.props.implementSuggestion}
             />
           }
         </div>

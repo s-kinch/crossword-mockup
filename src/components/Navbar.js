@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 import { Menu, Segment } from 'semantic-ui-react'
 
 
@@ -7,7 +7,6 @@ export default class Navbar extends React.Component {
 
   render() {
     let activeItem = 'home'
-    console.log(this.props)
     if (this.props.location.pathname.includes('/play')){
       activeItem = 'play'
     } else if (this.props.location.pathname.includes('/create')){
@@ -26,15 +25,4 @@ export default class Navbar extends React.Component {
       </Segment>
     )
   }
-
-  // render(){
-  //   return(
-  //     <div>
-  //       <NavLink to="/">Home</NavLink>
-  //       <NavLink to="/create">Create</NavLink>
-  //       <NavLink to="/play">Play</NavLink>
-  //     </div>
-  //   )
-  // }
-
 }

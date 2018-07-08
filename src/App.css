@@ -45,7 +45,7 @@ td {
 }
 
 ul {
-  list-style-type: none;
+  /* list-style-type: none; */
   padding-left: 10px;
 }
 
@@ -198,6 +198,12 @@ button {
 
 .clues {
   text-align: left !important;
+}
+
+#suggestions {
+  overflow-y: scroll;
+  height: 100px;
+  margin: 5px auto;
 }
 
 /* button.ui.button:focus {

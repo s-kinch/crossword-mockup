@@ -28,7 +28,7 @@ class Layout extends React.Component{
       <Segment inverted>
         Click a square on the grid to change its color.
       </Segment>
-      <List divided >
+      <List divided>
         <List.Item>
           Symmetry   <Checkbox slider onChange={this.props.toggleSymmetry} checked={!!this.props.symmetry}/>
         </List.Item>

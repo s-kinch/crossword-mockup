@@ -22,7 +22,9 @@ class Board extends React.Component {
       downClues: [],
       title: props.puzzle.title,
       redirect: false,
-      numBlackSquares: 0
+      numBlackSquares: 0,
+      suggestions: [],
+      showSuggestions: false
     }
 
   }
@@ -302,7 +304,7 @@ class Board extends React.Component {
       this.setState({
         squares: squaresCopy,
         selected: {x: newX, y: newY}
-      })
+      }, this.updateWords)
 
     } else if (e.shiftKey && key === 9){
       this.moveToPrevWord(this.getIndexOfWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y))
@@ -644,6 +646,45 @@ class Board extends React.Component {
     }
   }
 
+  //  ---------------------------Suggestions------------------------------------
+
+  suggest = () => {
+    // if ! selected square, alert
+    const word = this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y)
+    const pattern = word.map(letter => {
+      return letter.value === "" ? '-' : letter.value
+    }).join('')
+    fetch(API + '/create/suggest/' + pattern).then(res => res.json()).then(json => {
+      this.setState({
+        suggestions: json.words
+      })
+    })
+  }
+
+  toggleSuggest = () => {
+    this.setState({
+      showSuggestions: !this.state.showSuggestions
+    })
+  }
+
+  implementSuggestion = (word) => {
+    let squaresCopy = [...this.state.squares]
+    const currentWord = this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y)
+    const start = {x: currentWord[0].x, y: currentWord[0].y}
+    if (this.state.across){
+      for (let i = 0; i < word.length; i++){
+        squaresCopy[start.x][start.y + i] = {...squaresCopy[start.x][start.y + i], value: word[i]}
+      }
+    } else {
+      for (let i = 0; i < word.length; i++){
+        squaresCopy[start.x + i][start.y] = {...squaresCopy[start.x + i][start.y], value: word[i]}
+      }
+    }
+    this.setState({
+      squares: squaresCopy
+    }, this.updateWords)
+  }
+
 
   // ----------------------------Render-----------------------------------------
 
@@ -697,6 +738,11 @@ class Board extends React.Component {
             selectClue={this.selectClue}
             save={this.save}
             play={this.props.play}
+            suggest={this.suggest}
+            toggleSuggest={this.toggleSuggest}
+            suggestions={this.state.suggestions}
+            showSuggestions={this.state.showSuggestions}
+            implementSuggestion={this.implementSuggestion}
             blackWhiteRatio={((this.state.numBlackSquares / 225) * 100).toFixed(2)}
           />
         :
