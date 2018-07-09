@@ -734,7 +734,6 @@ class Grid extends React.Component {
       return (<Redirect push to={this.state.redirect} />)
     }
 
-
     return(
       <div className="flex-container" >
         <div className="tableboard">
@@ -774,7 +773,7 @@ class Grid extends React.Component {
             suggestions={this.state.suggestions}
             showSuggestions={this.state.showSuggestions}
             implementSuggestion={this.implementSuggestion}
-            blackWhiteRatio={((this.state.numBlackSquares / 225) * 100).toFixed(2)}
+            blackWhiteRatio={((this.state.squares.reduce((acc, current) => { return acc + current.filter(x => x.black).length }, 0) / 225) * 100).toFixed(2)}
           />
         :
           <PlayMenu
