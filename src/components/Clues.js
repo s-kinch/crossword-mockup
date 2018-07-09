@@ -15,16 +15,19 @@ class Clues extends React.Component {
         { this.props.play ? 'Click a square on the grid and typing.' : 'Click a clue or square on the grid and start typing.'}
       </Segment>
 
-      <Segment>
-        <Button onClick={() => {
-          if (!this.props.showSuggestions){
-            this.props.suggest()
-          }
+      { this.props.play ? '' :
+        <Segment>
+          <Button onClick={() => {
+            if (!this.props.showSuggestions){
+              this.props.suggest()
+            }
 
-          this.props.toggleSuggest()
-        }}>{this.props.showSuggestions ? 'Close' : 'Get Suggestions'}</Button>
-        {this.props.showSuggestions ? <div id="suggestions"><Suggestions suggestions={this.props.suggestions} implementSuggestion={this.props.implementSuggestion}/></div> : ''}
-      </Segment>
+            this.props.toggleSuggest()
+          }}>{this.props.showSuggestions ? 'Close' : 'Get Suggestions'}</Button>
+          {this.props.showSuggestions ? <div id="suggestions"><Suggestions suggestions={this.props.suggestions} implementSuggestion={this.props.implementSuggestion}/></div> : ''}
+        </Segment>
+      }
+
 
       <div className="clues-container">
         <div id="across-clues">

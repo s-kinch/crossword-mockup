@@ -206,6 +206,10 @@ button {
   margin: 5px auto;
 }
 
+.dropdown {
+  border: 0;
+}
+
 /* button.ui.button:focus {
   outline: 0 !important;
 } */

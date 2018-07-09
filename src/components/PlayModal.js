@@ -1,6 +1,6 @@
 import React from 'react'
 import Clues from './Clues'
-import { Button } from 'semantic-ui-react'
+import { Menu, Dropdown } from 'semantic-ui-react'
 
 class PlayModal extends React.Component {
 
@@ -8,8 +8,22 @@ class PlayModal extends React.Component {
     return(
       <div id="modal">
         <div id="cheese">
-          <Button onClick={()=>this.props.checkSquare()}>Check Square</Button>
-          <Button onClick={()=>this.props.revealSquare()}>Reveal Square</Button>
+          <Menu inverted>
+            <Dropdown item text='Check'>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={()=>this.props.checkSquare()}>Square</Dropdown.Item>
+                <Dropdown.Item onClick={()=>this.props.checkWord()}>Word</Dropdown.Item>
+                <Dropdown.Item onClick={()=>this.props.checkGrid()}>Grid</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown item text='Reveal'>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={()=>this.props.revealSquare()}>Square</Dropdown.Item>
+                <Dropdown.Item onClick={()=>this.props.revealWord()}>Word</Dropdown.Item>
+                <Dropdown.Item onClick={()=>this.props.revealGrid()}>Grid</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Menu>
 
         </div>
         <div id="hello">

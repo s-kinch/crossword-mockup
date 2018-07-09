@@ -300,7 +300,7 @@ class Board extends React.Component {
         }
       }
 
-      squaresCopy[newX][newY] = {...squaresCopy[newX][newY], value: ""}
+      squaresCopy[newX][newY] = {...squaresCopy[newX][newY], value: "", correct: null}
       this.setState({
         squares: squaresCopy,
         selected: {x: newX, y: newY}
@@ -590,7 +590,7 @@ class Board extends React.Component {
     })
   }
 
-  //  ---------------------------Checking---------------------------------------
+  //  ------------------------Check and Reveal----------------------------------
 
   checkSquareFetch = (x, y) => {
     return fetch(API + `/play/${this.props.puzzle.slug}/check`, {
@@ -607,29 +607,44 @@ class Board extends React.Component {
   checkSquare = (x, y) => {
     let xToCheck = x
     let yToCheck = y
-    if ((x && y) || (this.state.selected.x !== null && this.state.selected.y !== null)){
-      if (!(x && y)){
+    const xOrYUndefined = x == undefined || y == undefined
+
+    if ((!xOrYUndefined) || (this.state.selected.x !== null && this.state.selected.y !== null)){
+      if (xOrYUndefined){
         xToCheck = this.state.selected.x
         yToCheck = this.state.selected.y
       }
 
-      this.checkSquareFetch(xToCheck, yToCheck).then(json => {
-        const letter = json
-        let squaresCopy = [...this.state.squares]
-        squaresCopy[xToCheck][yToCheck] = {...squaresCopy[xToCheck][yToCheck], correct: letter.value === squaresCopy[xToCheck][yToCheck].value}
+      if (this.state.squares[x][y].value !== ""){
+        this.checkSquareFetch(xToCheck, yToCheck).then(json => {
+          console.log(xToCheck, yToCheck) // async probs maybe
+          const letter = json
+          let squaresCopy = [...this.state.squares]
+          squaresCopy[xToCheck][yToCheck] = {...squaresCopy[xToCheck][yToCheck], correct: letter.value === squaresCopy[xToCheck][yToCheck].value}
 
-        this.setState({
-          squares: squaresCopy
+          this.setState({
+            squares: squaresCopy
+          })
         })
-      })
+      }
     }
+  }
+
+  checkWord = () => {
+    this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y).forEach(letter => this.checkSquare(letter.x, letter.y))
+  }
+
+  checkGrid = () => {
+    this.state.squares.forEach(row => row.forEach(square => this.checkSquare(square.x, square.y)))
   }
 
   revealSquare = (x, y) => {
     let xToCheck = x
     let yToCheck = y
-    if ((x && y) || (this.state.selected.x !== null && this.state.selected.y !== null)){
-      if (!(x && y)){
+    const xOrYUndefined = x == undefined || y == undefined
+
+    if ((!xOrYUndefined) || (this.state.selected.x !== null && this.state.selected.y !== null)){
+      if (xOrYUndefined){
         xToCheck = this.state.selected.x
         yToCheck = this.state.selected.y
       }
@@ -646,6 +661,16 @@ class Board extends React.Component {
     }
   }
 
+  revealWord = () => {
+    this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y).forEach(letter => this.revealSquare(letter.x, letter.y))
+  }
+
+  revealGrid = () => {
+
+  }
+
+
+
   //  ---------------------------Suggestions------------------------------------
 
   suggest = () => {
@@ -660,7 +685,7 @@ class Board extends React.Component {
         })
       })
     } else {
-      alert('Please select a word on the grid.')      
+      alert('Please select a word on the grid.')
     }
   }
 
@@ -757,7 +782,11 @@ class Board extends React.Component {
             clues={this.props.puzzle.clues}
             selectClue={this.selectClue}
             checkSquare={this.checkSquare}
+            checkWord={this.checkWord}
+            checkGrid={this.checkGrid}
             revealSquare={this.revealSquare}
+            revealWord={this.revealWord}
+            revealGrid={this.revealGrid}
             play={this.props.play}
           />
         }
