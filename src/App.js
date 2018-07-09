@@ -10,7 +10,6 @@ import {withRouter} from 'react-router'
 
 class App extends Component {
   render() {
-    console.log('app', this.props)
     return (
       <div className="noselect">
         <Navbar location={this.props.location}/>

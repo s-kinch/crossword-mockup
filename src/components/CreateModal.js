@@ -1,7 +1,7 @@
 import React from 'react'
 import Layout from './Layout'
 import Clues from './Clues'
-import { Button, Header, Icon, Modal } from 'semantic-ui-react'
+import { Button, Modal } from 'semantic-ui-react'
 
 class CreateModal extends React.Component {
 

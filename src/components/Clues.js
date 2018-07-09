@@ -1,7 +1,7 @@
 import React from 'react'
 import Clue from './Clue'
 import Suggestions from './Suggestions'
-import { Button, Label, Segment } from 'semantic-ui-react'
+import { Button, Segment } from 'semantic-ui-react'
 
 class Clues extends React.Component {
 

@@ -607,7 +607,7 @@ class Board extends React.Component {
   checkSquare = (x, y) => {
     let xToCheck = x
     let yToCheck = y
-    const xOrYUndefined = x == undefined || y == undefined
+    const xOrYUndefined = x === undefined || y === undefined
 
     if ((!xOrYUndefined) || (this.state.selected.x !== null && this.state.selected.y !== null)){
       if (xOrYUndefined){
@@ -617,7 +617,6 @@ class Board extends React.Component {
 
       if (this.state.squares[x][y].value !== ""){
         this.checkSquareFetch(xToCheck, yToCheck).then(json => {
-          console.log(xToCheck, yToCheck) // async probs maybe
           const letter = json
           let squaresCopy = [...this.state.squares]
           squaresCopy[xToCheck][yToCheck] = {...squaresCopy[xToCheck][yToCheck], correct: letter.value === squaresCopy[xToCheck][yToCheck].value}
@@ -641,7 +640,7 @@ class Board extends React.Component {
   revealSquare = (x, y) => {
     let xToCheck = x
     let yToCheck = y
-    const xOrYUndefined = x == undefined || y == undefined
+    const xOrYUndefined = x === undefined || y === undefined
 
     if ((!xOrYUndefined) || (this.state.selected.x !== null && this.state.selected.y !== null)){
       if (xOrYUndefined){
@@ -666,7 +665,7 @@ class Board extends React.Component {
   }
 
   revealGrid = () => {
-
+    this.state.squares.forEach(row => row.forEach(square => this.revealSquare(square.x, square.y)))
   }
 
 

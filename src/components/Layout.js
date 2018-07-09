@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Popup, Checkbox, Label, List, Segment } from 'semantic-ui-react'
+import { Popup, Checkbox, Label, List, Segment } from 'semantic-ui-react'
 
 class Layout extends React.Component{
   constructor(){
