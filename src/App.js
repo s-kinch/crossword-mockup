@@ -4,7 +4,7 @@ import {Route} from 'react-router-dom'
 import Splash from './components/Splash'
 import Create from './components/Create'
 import PlayIndex from './components/PlayIndex'
-import PlayPuzzle from './components/PlayPuzzle'
+import Play from './components/Play'
 import Navbar from './components/Navbar'
 import {withRouter} from 'react-router'
 
@@ -14,7 +14,7 @@ class App extends Component {
       <div className="noselect">
         <Navbar location={this.props.location}/>
         <Route path="/create" component={Create} />
-        <Route path="/play/:slug" component={PlayPuzzle} />
+        <Route path="/play/:slug" component={Play} />
         <Route path="/play" exact component={PlayIndex} />
         <Route path="/" exact component={Splash} />
       </div>

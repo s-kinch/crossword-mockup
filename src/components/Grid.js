@@ -5,7 +5,7 @@ import Square from './Square'
 import { Redirect } from 'react-router'
 const API = 'http://localhost:3000/api/v1/puzzles'
 
-class Board extends React.Component {
+class Grid extends React.Component {
   constructor(props){
     super(props)
 
@@ -796,4 +796,4 @@ class Board extends React.Component {
 
 }
 
-export default Board
+export default Grid

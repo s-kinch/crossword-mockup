@@ -1,5 +1,5 @@
 import React from 'react'
-import Board from './Board'
+import Grid from './Grid'
 const API = 'http://localhost:3000/api/v1/puzzles'
 
 class Create extends React.Component {
@@ -22,7 +22,7 @@ class Create extends React.Component {
     return(
 
       <div>
-      { this.state.puzzle ? (<Board puzzle={this.state.puzzle} play={false}/>) : null }
+      { this.state.puzzle ? (<Grid puzzle={this.state.puzzle} play={false}/>) : null }
       </div>
     )
   }

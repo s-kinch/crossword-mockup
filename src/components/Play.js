@@ -1,8 +1,8 @@
 import React from 'react'
-import Board from './Board'
+import Grid from './Grid'
 const API = 'http://localhost:3000/api/v1/puzzles/play/'
 
-class PlayPuzzle extends React.Component {
+class Play extends React.Component {
   constructor(){
     super()
     this.state = {
@@ -19,10 +19,10 @@ class PlayPuzzle extends React.Component {
   render(){
     return(
       <div id="bye">
-        {this.state.puzzle ? <Board puzzle={this.state.puzzle} play={true}/> : null}
+        {this.state.puzzle ? <Grid puzzle={this.state.puzzle} play={true}/> : null}
       </div>
     )
   }
 }
 
-export default PlayPuzzle
+export default Play
