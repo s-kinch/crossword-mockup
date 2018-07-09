@@ -649,16 +649,19 @@ class Board extends React.Component {
   //  ---------------------------Suggestions------------------------------------
 
   suggest = () => {
-    // if ! selected square, alert
-    const word = this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y)
-    const pattern = word.map(letter => {
-      return letter.value === "" ? '-' : letter.value
-    }).join('')
-    fetch(API + '/create/suggest/' + pattern).then(res => res.json()).then(json => {
-      this.setState({
-        suggestions: json.words
+    if (this.state.selected.x !== null){
+      const word = this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y)
+      const pattern = word.map(letter => {
+        return letter.value === "" ? '-' : letter.value
+      }).join('')
+      fetch(API + '/create/suggest/' + pattern).then(res => res.json()).then(json => {
+        this.setState({
+          suggestions: json.words
+        })
       })
-    })
+    } else {
+      alert('Please select a word on the grid.')      
+    }
   }
 
   toggleSuggest = () => {
@@ -668,21 +671,25 @@ class Board extends React.Component {
   }
 
   implementSuggestion = (word) => {
-    let squaresCopy = [...this.state.squares]
-    const currentWord = this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y)
-    const start = {x: currentWord[0].x, y: currentWord[0].y}
-    if (this.state.across){
-      for (let i = 0; i < word.length; i++){
-        squaresCopy[start.x][start.y + i] = {...squaresCopy[start.x][start.y + i], value: word[i]}
+    if (this.state.selected.x !== null){
+      let squaresCopy = [...this.state.squares]
+      const currentWord = this.getWordThatLetterBelongsTo(this.state.selected.x, this.state.selected.y)
+      const start = {x: currentWord[0].x, y: currentWord[0].y}
+      if (this.state.across){
+        for (let i = 0; i < word.length; i++){
+          squaresCopy[start.x][start.y + i] = {...squaresCopy[start.x][start.y + i], value: word[i]}
+        }
+      } else {
+        for (let i = 0; i < word.length; i++){
+          squaresCopy[start.x + i][start.y] = {...squaresCopy[start.x + i][start.y], value: word[i]}
+        }
       }
+      this.setState({
+        squares: squaresCopy
+      }, this.updateWords)
     } else {
-      for (let i = 0; i < word.length; i++){
-        squaresCopy[start.x + i][start.y] = {...squaresCopy[start.x + i][start.y], value: word[i]}
-      }
+      alert('Please select a word on the grid.')
     }
-    this.setState({
-      squares: squaresCopy
-    }, this.updateWords)
   }
 
 
