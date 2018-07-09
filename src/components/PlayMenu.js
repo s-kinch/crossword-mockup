@@ -2,7 +2,7 @@ import React from 'react'
 import Clues from './Clues'
 import { Menu, Dropdown } from 'semantic-ui-react'
 
-class PlayModal extends React.Component {
+class PlayMenu extends React.Component {
 
   render(){
     return(
@@ -42,4 +42,4 @@ class PlayModal extends React.Component {
   }
 }
 
-export default PlayModal
+export default PlayMenu

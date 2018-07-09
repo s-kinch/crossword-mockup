@@ -1,6 +1,6 @@
 import React from 'react'
-import CreateModal from './CreateModal'
-import PlayModal from './PlayModal'
+import CreateMenu from './CreateMenu'
+import PlayMenu from './PlayMenu'
 import Square from './Square'
 import { Redirect } from 'react-router'
 const API = 'http://localhost:3000/api/v1/puzzles'
@@ -754,7 +754,7 @@ class Board extends React.Component {
         </div>
 
         {!this.props.puzzle.clues ?
-          <CreateModal
+          <CreateMenu
             mode={this.state.mode}
             setMode={this.setMode}
             toggleSymmetry={this.toggleSymmetry}
@@ -777,7 +777,7 @@ class Board extends React.Component {
             blackWhiteRatio={((this.state.numBlackSquares / 225) * 100).toFixed(2)}
           />
         :
-          <PlayModal
+          <PlayMenu
             clues={this.props.puzzle.clues}
             selectClue={this.selectClue}
             checkSquare={this.checkSquare}

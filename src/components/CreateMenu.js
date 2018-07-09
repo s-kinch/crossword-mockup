@@ -3,7 +3,7 @@ import Layout from './Layout'
 import Clues from './Clues'
 import { Button, Modal } from 'semantic-ui-react'
 
-class CreateModal extends React.Component {
+class CreateMenu extends React.Component {
 
   render(){
     const layoutColor = this.props.mode === 'layout' ? "#BFD78D" : null
@@ -53,4 +53,4 @@ class CreateModal extends React.Component {
   }
 }
 
-export default CreateModal
+export default CreateMenu
